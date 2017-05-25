@@ -12,14 +12,17 @@ public class ResearchPlugin extends AbstractPlugin
 {
     public static final String PLUGIN_NAME        =   "AUT Research Plugin";
     public static final String PLUGIN_DESCRIPTION =   "Agent-based network diffusion research plugin";   
-    
-    public ResearchPlugin(String name, String description) 
-    {
-        super(PLUGIN_NAME, PLUGIN_DESCRIPTION);
-    }
+
 
     @Override
     public void onEvent(int i)
     {
+    }
+
+    @Override
+    public void initPluginDetails() 
+    {
+        name        =   PLUGIN_NAME;
+        description =   PLUGIN_DESCRIPTION;
     }
 }
