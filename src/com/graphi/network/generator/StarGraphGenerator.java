@@ -37,8 +37,11 @@ public class StarGraphGenerator extends AbstractGenerator
     @Override
     public Graph<Node, Edge> generateNetwork(Factory<Node> nodeFactory, Factory<Edge> edgeFactory)
     {
-        Graph<Node, Edge> graph     =   new SparseMultigraph<>();
-        centerNode                  =   nodeFactory.create();
+        if(nodeFactory == null) nodeFactory         =   () -> new Node();
+        if(edgeFactory == null) edgeFactory         =   () -> new Edge();
+        Graph<Node, Edge> graph                     =   new SparseMultigraph<>();
+        
+        centerNode    =   nodeFactory.create();
         graph.addVertex(centerNode);
         
         for(int i = 1; i < numNodes; i++)
