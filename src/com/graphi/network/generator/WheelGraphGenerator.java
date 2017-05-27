@@ -16,6 +16,7 @@ import org.apache.commons.collections15.Factory;
 public class WheelGraphGenerator extends AbstractGenerator
 {
     private int numNodes;
+    private Node spokeNode;
     
     public WheelGraphGenerator()
     {
@@ -40,10 +41,11 @@ public class WheelGraphGenerator extends AbstractGenerator
         if(edgeFactory == null) edgeFactory         =   () -> new Edge();
         
         Graph<Node, Edge> graph =   new SparseMultigraph<>();   
-        Node spokeNode          =   nodeFactory.create();
+        spokeNode               =   nodeFactory.create();
         Node prevNode           =   null;
         Node currentNode        =   null;
         Node tailNode           =   null;
+        graph.addVertex(spokeNode);
         
         for(int i = 1; i < numNodes; i++)
         {
@@ -61,6 +63,11 @@ public class WheelGraphGenerator extends AbstractGenerator
         
         graph.addEdge(edgeFactory.create(), currentNode, tailNode);
         return graph;
+    }
+    
+    public Node getSpokeNode()
+    {
+        return spokeNode;
     }
 
     public void setNumNodes(int numNodes) 
