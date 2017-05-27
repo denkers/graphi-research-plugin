@@ -4,7 +4,7 @@
 //  https://github.com/denkers/graphi-research-plugin
 //======================================================
 
-package com.graphi.research;
+package com.graphi.research.plugin;
 
 import com.graphi.plugins.AbstractPlugin;
 
@@ -25,4 +25,13 @@ public class ResearchPlugin extends AbstractPlugin
         name        =   PLUGIN_NAME;
         description =   PLUGIN_DESCRIPTION;
     }
+
+    @Override
+    public void onPluginLoad() {}
+
+    @Override
+    public void onPluginActivate() {}
+
+    @Override
+    public void onPluginDeactivate() {}
 }
