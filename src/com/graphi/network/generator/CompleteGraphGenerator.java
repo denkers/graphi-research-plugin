@@ -11,26 +11,27 @@ import com.graphi.graph.Node;
 import com.graphi.sim.generator.AbstractGenerator;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
+import java.util.Collection;
 import org.apache.commons.collections15.Factory;
 
-public class WheelGraphGenerator extends AbstractGenerator
+public class CompleteGraphGenerator extends AbstractGenerator
 {
     private int numNodes;
     
-    public WheelGraphGenerator()
+    public CompleteGraphGenerator()
     {
-        this(4);
+        this(2);
     }
     
-    public WheelGraphGenerator(int numNodes)
+    public CompleteGraphGenerator(int n)
     {
-        this.numNodes   =   numNodes;
+        numNodes    =   n;
     }
-    
+
     @Override
     protected void initGeneratorDetails() 
     {
-        generatorName           =   "Wheel Graph";
+        generatorName   =   "Complete Graph";
     }
 
     @Override
@@ -38,29 +39,28 @@ public class WheelGraphGenerator extends AbstractGenerator
     {
         if(nodeFactory == null) nodeFactory         =   () -> new Node();
         if(edgeFactory == null) edgeFactory         =   () -> new Edge();
+        Graph<Node, Edge> graph                     =   new SparseMultigraph<>();
         
-        Graph<Node, Edge> graph =   new SparseMultigraph<>();   
-        Node spokeNode          =   nodeFactory.create();
-        Node prevNode           =   null;
-        Node currentNode        =   null;
-        Node tailNode           =   null;
-        
-        for(int i = 1; i < numNodes; i++)
+        for(int i = 0; i < numNodes; i++)
         {
-            currentNode =   nodeFactory.create();
-            graph.addVertex(currentNode);
-            graph.addEdge(edgeFactory.create(), spokeNode, currentNode);
+            Node nextNode   =   nodeFactory.create();
             
-            if(prevNode != null)
-                graph.addEdge(edgeFactory.create(), prevNode, currentNode);
-            else
-                tailNode    =   currentNode;
+            if(i > 0)
+            {
+                Collection<Node> vertices   =   graph.getVertices();
+                for(Node vertex : vertices)
+                    graph.addEdge(edgeFactory.create(), nextNode, vertex);
+            }
             
-            prevNode    =   currentNode;
+            graph.addVertex(nextNode);
         }
         
-        graph.addEdge(edgeFactory.create(), currentNode, tailNode);
         return graph;
+    }
+
+    public int getNumNodes() 
+    {
+        return numNodes;
     }
 
     public void setNumNodes(int numNodes) 
