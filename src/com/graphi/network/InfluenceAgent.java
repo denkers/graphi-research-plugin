@@ -11,15 +11,15 @@ import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.awt.Color;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class InfluenceAgent extends Node
 {
     private boolean influenced;
     private boolean authentic;
-    private List<InfluenceAgent> influenceOffers;
+    private Set<InfluenceAgent> influenceOffers;
     private InfluenceAgent influencer;
-    private int depth;
     
     public InfluenceAgent()
     {
@@ -39,6 +39,11 @@ public class InfluenceAgent extends Node
     public InfluenceAgent(int id, String name, Color fill)
     {
         super(id, name, fill);
+        
+        influenced      =   false;
+        authentic       =   true;
+        influencer      =   null;
+        influenceOffers =   new TreeSet<>();   
     }
 
     public int getInfluencedDepth()
@@ -67,6 +72,18 @@ public class InfluenceAgent extends Node
         return maxHeight + 1;
     }
     
+    public void addInfluenceOffer(InfluenceAgent influenceAgent)
+    {
+        if(influenceAgent.isInfluenced())
+            influenceOffers.add(influenceAgent);
+    }
+    
+    public void influenceNode(InfluenceAgent influencerAgent)
+    {
+        influenced  =   true;
+        authentic   =   influencerAgent.isAuthentic();
+    }
+    
     public boolean isInfluenced() 
     {
         return influenced;
@@ -87,7 +104,7 @@ public class InfluenceAgent extends Node
         this.authentic = authentic;
     }
 
-    public List<InfluenceAgent> getInfluenceOffers() 
+    public Set<InfluenceAgent> getInfluenceOffers() 
     {
         return influenceOffers;
     }
@@ -111,4 +128,5 @@ public class InfluenceAgent extends Node
     {
         return influencer;
     }
+    
 }
