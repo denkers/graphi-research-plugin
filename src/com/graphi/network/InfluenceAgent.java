@@ -45,14 +45,15 @@ public class InfluenceAgent extends Node
         influencer      =   null;
         influenceOffers =   new TreeSet<>();   
     }
+    
 
-    public int getInfluencedDepth()
+    public int getInfluencedTreeDepth()
     {
         if(influencer == null) return 0;
-        else return influencer.getInfluencedDepth() + 1;
+        else return influencer.getInfluencedTreeDepth() + 1;
     }
     
-    public int getInfluencedHeight(Graph<Node, Edge> graph)
+    public int getInfluencedTreeHeight(Graph<Node, Edge> graph)
     {
         Collection<Node> neighbours =   graph.getNeighbors(this);
         int maxHeight               =   0;
@@ -64,7 +65,7 @@ public class InfluenceAgent extends Node
             InfluenceAgent agentNeighbour   =   (InfluenceAgent) neighbour;
             if(agentNeighbour.isInfluenced() && agentNeighbour.getInfluencer().equals(this)) 
             {
-                int neighbourHeight     =   agentNeighbour.getInfluencedHeight(graph);
+                int neighbourHeight     =   agentNeighbour.getInfluencedTreeHeight(graph);
                 if(neighbourHeight > maxHeight) maxHeight   =   neighbourHeight;
             }
         }
@@ -74,8 +75,7 @@ public class InfluenceAgent extends Node
     
     public void addInfluenceOffer(InfluenceAgent influenceAgent)
     {
-        if(influenceAgent.isInfluenced())
-            influenceOffers.add(influenceAgent);
+        influenceAgent.addInfluenceOffer(this);
     }
     
     public void influenceNode(InfluenceAgent influencerAgent)
