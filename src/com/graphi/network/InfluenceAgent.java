@@ -24,17 +24,17 @@ public class InfluenceAgent extends Node
     
     public InfluenceAgent()
     {
-        super();
+        this(0, "");
     }
     
     public InfluenceAgent(int id)
     {
-        super(id);
+        this(id, "");
     }
     
     public InfluenceAgent(int id, String name)
     {
-        super(id, name);
+        this(id, name, null);
     }
     
     public InfluenceAgent(int id, String name, Color fill)

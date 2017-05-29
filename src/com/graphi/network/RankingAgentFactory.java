@@ -14,9 +14,11 @@ public class RankingAgentFactory extends GraphObjFactory<Node>
 {
     private Comparator<Node> policyComparator;
     
-     public RankingAgentFactory()
+    public RankingAgentFactory(Comparator<Node> policyComparator)
     {
         super();
+        
+        this.policyComparator   =   policyComparator;
     }
     
     public RankingAgentFactory(int lastID)
@@ -33,9 +35,7 @@ public class RankingAgentFactory extends GraphObjFactory<Node>
     public Node create()
     {
         lastID                      +=  incAmount;
-        RankingAgent rankingAgent   =    new RankingAgent(lastID, Integer.toHexString(lastID)); 
-        rankingAgent.setPolicyComparator(policyComparator);
-        
+        RankingAgent rankingAgent   =    new RankingAgent(lastID, Integer.toHexString(lastID), policyComparator); 
         return rankingAgent;
     }
 

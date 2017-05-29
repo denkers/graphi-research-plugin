@@ -7,7 +7,9 @@
 package com.graphi.network.rank;
 
 import com.graphi.graph.Node;
+import com.graphi.network.RankingAgent;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -24,13 +26,30 @@ public class PolicyController
     public PolicyController()
     {
         pendingInfluenceAgents  =   new HashSet<>();
+        treeScores              =   new HashMap<>();
     }
     
     public void pollPendingAgents()
     {
         for(Node pendingAgent: pendingInfluenceAgents)
         {
+            RankingAgent agent              =   (RankingAgent) pendingAgent;
+            RankingAgent optimalInfluencer  =   (RankingAgent) agent.chooseOptimalInfluencer();
             
+            if(optimalInfluencer != null)
+            {
+                if(policyMode == TRENDING_TREE_MODE)
+                {
+                    RankingAgent influencerTreeRoot   =   optimalInfluencer.getTreeRootAgent();
+                    if(treeScores.containsKey(influencerTreeRoot))
+                        treeScores.put(influencerTreeRoot, treeScores.get(influencerTreeRoot) + 1);
+                    else
+                        treeScores.put(influencerTreeRoot, 1);
+                }
+                
+                optimalInfluencer.influenceAgent(agent);
+                agent.clearInfluenceOffers();
+            }
         }
         
         pendingInfluenceAgents.clear();

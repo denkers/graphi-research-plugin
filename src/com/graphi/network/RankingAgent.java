@@ -7,40 +7,51 @@
 package com.graphi.network;
 
 import com.graphi.graph.Node;
+import com.graphi.network.rank.TrendingSourceComparator;
 import java.awt.Color;
 import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.PriorityQueue;
 
 public class RankingAgent extends InfluenceAgent
 {
     private RankingAgent treeRootAgent;
     private int propagationCount;
     private Comparator<Node> policyComparator;
-    private Set<InfluenceAgent> influenceOffers;
+    private PriorityQueue<InfluenceAgent> influenceOffers;
             
     public RankingAgent()
     {
-        super();
+        this(0, "", new TrendingSourceComparator());
     }
     
-    public RankingAgent(int id)
+    public RankingAgent(int id, Comparator<Node> policyComparator)
     {
-        super(id);
+        this(id, "", policyComparator);
     }
     
-    public RankingAgent(int id, String name)
+    public RankingAgent(int id, String name, Comparator<Node> policyComparator)
     {
-        super(id, name);
+        this(id, name, null, policyComparator);
     }
     
-    public RankingAgent(int id, String name, Color fill)
+    public RankingAgent(int id, String name, Color fill, Comparator<Node> policyComparator)
     {
         super(id, name, fill);
         
-        propagationCount    =   0;
-        treeRootAgent       =   null;
-        influenceOffers     =   new TreeSet<>();   
+        propagationCount        =   0;
+        treeRootAgent           =   null;
+        this.policyComparator   =   policyComparator;
+        influenceOffers         =   new PriorityQueue<>(policyComparator);   
+    }
+    
+    public Node chooseOptimalInfluencer()
+    {
+        return influenceOffers.peek();
+    }
+    
+    public void clearInfluenceOffers()
+    {
+        influenceOffers.clear();
     }
     
     @Override
@@ -83,17 +94,7 @@ public class RankingAgent extends InfluenceAgent
         return policyComparator;
     }
 
-    public void setPolicyComparator(Comparator<Node> policyComparator) 
-    {
-        this.policyComparator = policyComparator;
-    }
-    
-    public void clearInfluenceOffers()
-    {
-        influenceOffers.clear();
-    }
-    
-    public Set<InfluenceAgent> getInfluenceOffers() 
+    public PriorityQueue<InfluenceAgent> getInfluenceOffers() 
     {
         return influenceOffers;
     }
