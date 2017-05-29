@@ -10,22 +10,25 @@ import com.graphi.graph.Node;
 import com.graphi.network.RankingAgent;
 import java.util.Comparator;
 
-public class TrendingSourceComparator implements Comparator<Node>
+public class TrendingTreeComparator implements Comparator<Node>
 {
+    private final PolicyController policyController;
+    
+    public TrendingTreeComparator(PolicyController policyController)
+    {
+        this.policyController   =   policyController;
+    }
+    
     @Override
     public int compare(Node nodeA, Node nodeB) 
     {
         RankingAgent agentA     =   (RankingAgent) nodeA;
         RankingAgent agentB     =   (RankingAgent) nodeB;
-        int propagationCountA   =   agentA.getPropagationCount();
-        int propagationCountB   =   agentB.getPropagationCount();
+        int scoreA              =   policyController.getTreeScore(agentA.getTreeRootAgent());
+        int scoreB              =   policyController.getTreeScore(agentB.getTreeRootAgent());
         
-        if(propagationCountA > propagationCountB)
-            return -1;
-        
-        else if (propagationCountA < propagationCountB)
-            return 1;
-        
+        if(scoreA > scoreB) return -1;
+        else if(scoreA < scoreB) return 1;
         else return 0;
     }
 }

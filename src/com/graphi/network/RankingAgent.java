@@ -50,18 +50,17 @@ public class RankingAgent extends InfluenceAgent
         
         propagationCount++;
         RankingAgent rankingTarget  =   (RankingAgent) target;
-        RankingAgent rootAgent      =   treeRootAgent == null? this : treeRootAgent;
-        rankingTarget.setTreeRootAgent(rootAgent);
+        rankingTarget.setTreeRootAgent(getTreeRootAgent());
     }
     
     public void addInfluenceOffer(RankingAgent influenceAgent)
     {
         influenceAgent.addInfluenceOffer(this);
     }
-
+    
     public RankingAgent getTreeRootAgent() 
     {
-        return treeRootAgent;
+        return treeRootAgent == null? this : treeRootAgent;
     }
 
     public void setTreeRootAgent(RankingAgent treeRootAgent) 
