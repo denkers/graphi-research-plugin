@@ -7,10 +7,13 @@
 package com.graphi.network;
 
 import com.graphi.graph.Edge;
+import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.awt.Color;
 import java.util.Collection;
+import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -40,12 +43,11 @@ public class InfluenceAgent extends Node
     {
         super(id, name, fill);
         
-        influenced      =   false;
-        authentic       =   true;
-        influencer      =   null;
-        influenceOffers =   new TreeSet<>();   
+        influenced              =   false;
+        authentic               =   true;
+        influencer              =   null;
+        influenceOffers         =   new TreeSet<>();   
     }
-    
 
     public int getInfluencedTreeDepth()
     {
@@ -73,15 +75,51 @@ public class InfluenceAgent extends Node
         return maxHeight + 1;
     }
     
+    
+    
     public void addInfluenceOffer(InfluenceAgent influenceAgent)
     {
         influenceAgent.addInfluenceOffer(this);
     }
     
-    public void influenceNode(InfluenceAgent influencerAgent)
+    public boolean tryInfluenceAgent(InfluenceAgent target)
     {
-        influenced  =   true;
-        authentic   =   influencerAgent.isAuthentic();
+        Graph<Node, Edge> network   =   GraphDataManager.getGraphDataInstance().getGraph();
+        Edge edge                   =   network.findEdge(this, target);
+        Random rGen                 =   new Random();
+        
+        if(edge != null)
+        {
+            double influenceProbability     =   edge.getWeight();
+            double roll                     =   rGen.nextDouble();
+            
+            return roll <= influenceProbability;
+        }
+        
+        return false;
+    }
+    
+    public Node chooseOptimalNeighbour()
+    {
+        Graph<Node, Edge> network       =   GraphDataManager.getGraphDataInstance().getGraph();
+        Collection<Node> neighbours     =   network.getNeighbors(this);
+        
+        if(neighbours.isEmpty()) return null;
+        
+        else
+        {
+            InfluencedNeighbourPriorityQueue rankedNeighbours   =   new InfluencedNeighbourPriorityQueue(neighbours.size());
+            rankedNeighbours.addAll(neighbours);
+            
+            return rankedNeighbours.peek();
+        }
+    }
+    
+    public void influenceAgent(InfluenceAgent target)
+    {
+        target.setInfluenced(true);
+        target.setInfluencer(this);
+        target.setAuthentic(authentic);
     }
     
     public boolean isInfluenced() 
@@ -129,4 +167,32 @@ public class InfluenceAgent extends Node
         return influencer;
     }
     
+    public void setInfluencer(InfluenceAgent influencer)
+    {
+        this.influencer =   influencer;
+    }
+    
+    private class InfluencedNeighbourPriorityQueue extends PriorityQueue<Node>
+    {
+        public InfluencedNeighbourPriorityQueue(int initialCapacity)
+        {
+            super(initialCapacity, new InfluenceRankComparator(InfluenceAgent.this));
+        }
+        
+        @Override
+        public boolean add(Node node)
+        {
+            if(node instanceof InfluenceAgent)
+            {
+                InfluenceAgent agent    =   (InfluenceAgent) node;
+                
+                if(agent.isInfluenced())
+                    return false;
+                
+                else return super.add(node);
+            }
+            
+            else return false;
+        }
+    }
 }
