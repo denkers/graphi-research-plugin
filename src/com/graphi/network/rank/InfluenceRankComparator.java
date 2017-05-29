@@ -4,7 +4,7 @@
 //  https://github.com/denkers/graphi-research-plugin
 //======================================================
 
-package com.graphi.network;
+package com.graphi.network.rank;
 
 import com.graphi.graph.Edge;
 import com.graphi.graph.GraphDataManager;

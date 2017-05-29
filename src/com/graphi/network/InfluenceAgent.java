@@ -6,6 +6,7 @@
 
 package com.graphi.network;
 
+import com.graphi.network.rank.InfluenceRankComparator;
 import com.graphi.graph.Edge;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
@@ -74,8 +75,6 @@ public class InfluenceAgent extends Node
         
         return maxHeight + 1;
     }
-    
-    
     
     public void addInfluenceOffer(InfluenceAgent influenceAgent)
     {

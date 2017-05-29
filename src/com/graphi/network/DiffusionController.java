@@ -66,9 +66,29 @@ public class DiffusionController
                 InfluenceAgent neighbourAgent   =   (InfluenceAgent) optimalNeighbour;   
                 boolean influenceSuccess        =   agent.tryInfluenceAgent(neighbourAgent);
                 
-                if(influenceSuccess) agent.influenceAgent(neighbourAgent);
+                if(influenceSuccess) 
+                {
+                    if(diffusionMode == STANDARD_MODE || diffusionMode == STANDARD_AUTH_MODE)
+                        agent.influenceAgent(neighbourAgent);
+                    
+                    else
+                    {
+                        agent.addInfluenceOffer(neighbourAgent);
+                        pendingInfluenceAgents.add(neighbourAgent);
+                    }
+                }
             }
         }
+    }
+    
+    public void pollPendingAgents()
+    {
+        for(Node pendingAgent: pendingInfluenceAgents)
+        {
+            
+        }
+        
+        pendingInfluenceAgents.clear();
     }
     
     public void generateSeeds()
