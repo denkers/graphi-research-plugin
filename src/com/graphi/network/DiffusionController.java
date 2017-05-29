@@ -6,14 +6,20 @@
 
 package com.graphi.network;
 
+import com.graphi.display.layout.GraphPanel;
+import com.graphi.graph.Edge;
+import com.graphi.graph.GraphData;
+import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
 import com.graphi.sim.generator.NetworkGenerator;
+import com.graphi.util.factory.EdgeFactory;
+import edu.uci.ics.jung.graph.Graph;
 import java.util.HashSet;
 import java.util.Set;
 
 public class DiffusionController 
 {
-    private Set<Node> finishedNodes;
+    private Set<Node> activeAgents;
     private NetworkSeeder seeder;
     private NetworkGenerator networkGenerator;
     private int timeUnit;
@@ -28,7 +34,27 @@ public class DiffusionController
         this.networkGenerator   =   networkGenerator;
         this.seeder             =   seeder;
         timeUnit                =   0;
-        finishedNodes           =   new HashSet<>();
+        activeAgents            =   null;
+    }
+    
+    
+    
+    public void generateSeeds()
+    {
+        GraphData graphData     =   GraphDataManager.getGraphDataInstance();
+        seeder.generateSeeds(graphData.getNodes(), graphData.getGraph());
+        activeAgents            =   new HashSet<>(seeder.getSeeds());
+    }
+    
+    public void generateNetwork()
+    {
+        Graph<Node, Edge> network   =   networkGenerator.generateNetwork(new InfluenceAgentFactory(), new EdgeFactory());
+        MutualNeighbourModel.transformInfluenceNetwork(network);
+
+        GraphData graphData         =   GraphDataManager.getGraphDataInstance();
+        graphData.resetFactoryIDs();
+        graphData.setGraph(network);
+        GraphPanel.getInstance().reloadGraph();
     }
     
     public NetworkSeeder getSeeder() 
@@ -51,9 +77,9 @@ public class DiffusionController
         this.networkGenerator = networkGenerator;
     }
 
-    public Set<Node> getFinishedNodes()
+    public Set<Node> getActiveAgents()
     {
-        return finishedNodes;
+        return activeAgents;
     }
 
     public int getTimeUnit() 
