@@ -15,14 +15,11 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class InfluenceAgent extends Node
 {
     private boolean influenced;
     private boolean authentic;
-    private Set<InfluenceAgent> influenceOffers;
     private InfluenceAgent influencer;
     
     public InfluenceAgent()
@@ -47,7 +44,6 @@ public class InfluenceAgent extends Node
         influenced              =   false;
         authentic               =   true;
         influencer              =   null;
-        influenceOffers         =   new TreeSet<>();   
     }
 
     public int getInfluencedTreeDepth()
@@ -74,11 +70,6 @@ public class InfluenceAgent extends Node
         }
         
         return maxHeight + 1;
-    }
-    
-    public void addInfluenceOffer(InfluenceAgent influenceAgent)
-    {
-        influenceAgent.addInfluenceOffer(this);
     }
     
     public boolean tryInfluenceAgent(InfluenceAgent target)
@@ -141,26 +132,6 @@ public class InfluenceAgent extends Node
         this.authentic = authentic;
     }
 
-    public Set<InfluenceAgent> getInfluenceOffers() 
-    {
-        return influenceOffers;
-    }
-    
-    public void clearInfluenceOffers()
-    {
-        influenceOffers.clear();
-    }
-    
-    public int getInfluenceOfferCount()
-    {
-        return influenceOffers.size();
-    }
-    
-    public boolean hasInfluenceOffers()
-    {
-        return !influenceOffers.isEmpty();
-    }
-    
     public Node getInfluencer()
     {
         return influencer;

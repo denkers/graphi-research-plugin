@@ -11,6 +11,7 @@ import com.graphi.graph.Edge;
 import com.graphi.graph.GraphData;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.rank.PolicyController;
 import com.graphi.sim.generator.NetworkGenerator;
 import com.graphi.util.factory.EdgeFactory;
 import edu.uci.ics.jung.graph.Graph;
@@ -25,9 +26,9 @@ public class DiffusionController
     public static final int POLICY_AUTH_MODE    =   3;
     
     private Set<Node> activeAgents;
-    private Set<Node> pendingInfluenceAgents;
     private NetworkSeeder seeder;
     private NetworkGenerator networkGenerator;
+    private PolicyController policyController;
     private int timeUnit;
     private int diffusionMode;
     
@@ -47,7 +48,6 @@ public class DiffusionController
         this.seeder             =   seeder;
         this.diffusionMode      =   diffusionMode;
         timeUnit                =   0;
-        pendingInfluenceAgents  =   new HashSet<>();
         activeAgents            =   null;
     }
     
@@ -73,22 +73,12 @@ public class DiffusionController
                     
                     else
                     {
-                        agent.addInfluenceOffer(neighbourAgent);
-                        pendingInfluenceAgents.add(neighbourAgent);
+                        ((RankingAgent) agent).addInfluenceOffer((RankingAgent) neighbourAgent);
+                        policyController.addPendingAgent(neighbourAgent);
                     }
                 }
             }
         }
-    }
-    
-    public void pollPendingAgents()
-    {
-        for(Node pendingAgent: pendingInfluenceAgents)
-        {
-            
-        }
-        
-        pendingInfluenceAgents.clear();
     }
     
     public void generateSeeds()
@@ -139,13 +129,18 @@ public class DiffusionController
         return timeUnit;
     }
 
-    public Set<Node> getPendingInfluenceAgents()
-    {
-        return pendingInfluenceAgents;
-    }
-
     public int getDiffusionMode() 
     {
         return diffusionMode;
+    }
+
+    public PolicyController getPolicyController()
+    {
+        return policyController;
+    }
+
+    public void setPolicyController(PolicyController policyController) 
+    {
+        this.policyController = policyController;
     }
 }

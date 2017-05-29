@@ -6,12 +6,18 @@
 
 package com.graphi.network;
 
+import com.graphi.graph.Node;
 import java.awt.Color;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class RankingAgent extends InfluenceAgent
 {
     private RankingAgent treeRootAgent;
     private int propagationCount;
+    private Comparator<Node> policyComparator;
+    private Set<InfluenceAgent> influenceOffers;
             
     public RankingAgent()
     {
@@ -34,6 +40,7 @@ public class RankingAgent extends InfluenceAgent
         
         propagationCount    =   0;
         treeRootAgent       =   null;
+        influenceOffers     =   new TreeSet<>();   
     }
     
     @Override
@@ -45,6 +52,11 @@ public class RankingAgent extends InfluenceAgent
         RankingAgent rankingTarget  =   (RankingAgent) target;
         RankingAgent rootAgent      =   treeRootAgent == null? this : treeRootAgent;
         rankingTarget.setTreeRootAgent(rootAgent);
+    }
+    
+    public void addInfluenceOffer(RankingAgent influenceAgent)
+    {
+        influenceAgent.addInfluenceOffer(this);
     }
 
     public RankingAgent getTreeRootAgent() 
@@ -65,5 +77,35 @@ public class RankingAgent extends InfluenceAgent
     public void setPropagationCount(int propagationCount)
     {
         this.propagationCount = propagationCount;
+    }
+
+    public Comparator<Node> getPolicyComparator()
+    {
+        return policyComparator;
+    }
+
+    public void setPolicyComparator(Comparator<Node> policyComparator) 
+    {
+        this.policyComparator = policyComparator;
+    }
+    
+    public void clearInfluenceOffers()
+    {
+        influenceOffers.clear();
+    }
+    
+    public Set<InfluenceAgent> getInfluenceOffers() 
+    {
+        return influenceOffers;
+    }
+    
+    public int getInfluenceOfferCount()
+    {
+        return influenceOffers.size();
+    }
+    
+    public boolean hasInfluenceOffers()
+    {
+        return !influenceOffers.isEmpty();
     }
 }
