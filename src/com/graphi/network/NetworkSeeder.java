@@ -128,7 +128,7 @@ public class NetworkSeeder
             int i                   =   0;
             Collections.shuffle(seedsCopy);
             
-            for(i = 0; i < falseSize; i++)
+            for(; i < falseSize; i++)
             {
                 InfluenceAgent agentSeed    =   (InfluenceAgent) seedsCopy.get(i);
                 agentSeed.setAuthentic(false);

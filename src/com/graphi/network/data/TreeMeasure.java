@@ -19,6 +19,7 @@ public class TreeMeasure
     
     private Map<Node, Integer> maxTreeHeights;
     private Map<Node, Integer> treeSizes;
+    private Node maxTreeSizeNode, maxTreeHeightNode;
     private int populationSize;
     private int recordMode;
     
@@ -31,6 +32,8 @@ public class TreeMeasure
     {
         this.populationSize     =   populationSize;
         this.recordMode         =   recordMode;
+        maxTreeSizeNode         =   null;
+        maxTreeHeightNode       =   null;
     }
     
     public boolean addAgent(Node node)
@@ -49,6 +52,9 @@ public class TreeMeasure
                 
                 else if(maxTreeHeights.get(treeSource) < depth)
                     maxTreeHeights.put(treeSource, depth);
+                
+                if(maxTreeHeightNode == null || (depth > maxTreeHeights.get(maxTreeHeightNode)))
+                    maxTreeHeightNode   =   treeSource;
             }
             
             else if(recordMode == RECORD_TREE_SIZE || recordMode == RECORD_BOTH_MODE)
@@ -56,6 +62,9 @@ public class TreeMeasure
                 RankingAgent treeSource =   agent.getTreeRootAgent();
                 int treeSize            =   treeSizes.containsKey(treeSource)? (treeSizes.get(treeSource) + 1) : 1;
                 treeSizes.put(treeSource, treeSize);
+                
+                if(maxTreeSizeNode == null || (treeSize > treeSizes.get(maxTreeSizeNode)))
+                    maxTreeSizeNode   =   treeSource;
             }
             
             return true;
@@ -77,6 +86,22 @@ public class TreeMeasure
             total += treeRecordings.get(tree);
 
         return (double) total / (double) numTrees;
+    }
+    
+    public int getMaxTreeHeight()
+    {
+        if(maxTreeHeightNode != null)
+            return maxTreeHeights.get(maxTreeHeightNode);
+        
+        else return 0;
+    }
+    
+    public int getMaxTreeSize()
+    {
+        if(maxTreeSizeNode != null)
+            return treeSizes.get(maxTreeSizeNode);
+        
+        else return 0;
     }
     
     public int getPopulationSize() 
@@ -107,5 +132,15 @@ public class TreeMeasure
     public Map<Node, Integer> getTreeSizes() 
     {
         return treeSizes;
+    }
+
+    public Node getMaxTreeSizeNode() 
+    {
+        return maxTreeSizeNode;
+    }
+
+    public Node getMaxTreeHeightNode() 
+    {
+        return maxTreeHeightNode;
     }
 }
