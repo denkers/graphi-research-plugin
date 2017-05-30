@@ -7,6 +7,7 @@
 package com.graphi.network;
 
 import com.graphi.display.layout.GraphPanel;
+import com.graphi.display.layout.controls.PlaybackControlPanel;
 import com.graphi.graph.Edge;
 import com.graphi.graph.GraphData;
 import com.graphi.graph.GraphDataManager;
@@ -15,6 +16,7 @@ import com.graphi.network.rank.PolicyController;
 import com.graphi.sim.generator.NetworkGenerator;
 import com.graphi.util.factory.EdgeFactory;
 import edu.uci.ics.jung.graph.Graph;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,11 +76,14 @@ public class DiffusionController
                     else
                     {
                         ((RankingAgent) agent).addInfluenceOffer((RankingAgent) neighbourAgent);
-                        policyController.addPendingAgent(neighbourAgent);
+                        if(policyController != null) policyController.addPendingAgent(neighbourAgent);
                     }
                 }
             }
         }
+        
+        if(policyController != null && (diffusionMode == POLICY_MODE || diffusionMode == POLICY_AUTH_MODE))
+            policyController.pollPendingAgents();
     }
     
     public void generateSeeds()
@@ -97,6 +102,14 @@ public class DiffusionController
         graphData.resetFactoryIDs();
         graphData.setGraph(network);
         GraphPanel.getInstance().reloadGraph();
+    }
+    
+    public void recordState()
+    {
+        PlaybackControlPanel pbPanel    =   GraphPanel.getInstance().getPlaybackPanel();
+        String name                     =   "Time Unit (" + timeUnit + ")";
+        pbPanel.addRecordedGraph(name, new Date(), true, true, true);
+        timeUnit++;
     }
     
     public NetworkSeeder getSeeder() 
