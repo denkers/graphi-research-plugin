@@ -8,7 +8,9 @@ package com.graphi.network.data;
 
 import com.graphi.graph.Node;
 import com.graphi.network.RankingAgent;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.table.DefaultTableModel;
@@ -59,7 +61,7 @@ public class TreeMeasure
                     maxTreeHeightNode   =   treeSource;
             }
             
-            else if(isTreeSizeMode())
+            if(isTreeSizeMode())
             {
                 RankingAgent treeSource =   agent.getTreeRootAgent();
                 int treeSize            =   treeSizes.containsKey(treeSource)? (treeSizes.get(treeSource) + 1) : 1;
@@ -88,6 +90,69 @@ public class TreeMeasure
             total += treeRecordings.get(tree);
 
         return (double) total / (double) numTrees;
+    }
+    
+    public DefaultTableModel getTreeModel()
+    {
+        DefaultTableModel model =   new DefaultTableModel();
+        model.addColumn("Tree Source ID");
+        model.addColumn("Authentic Tree");
+        
+        if(isTreeSizeMode())
+        {
+            model.addColumn("Tree Size");
+            model.addColumn("Max Tree Size");
+            model.addColumn("Average Tree Size");
+        }
+        
+        if(isTreeHeightMode())
+        {
+            model.addColumn("Tree Height");
+            model.addColumn("Max Tree Height");
+            model.addColumn("Average Tree Height");
+        }
+        
+        Set<Node> treeNodes =   isTreeSizeMode()? treeSizes.keySet() : maxTreeHeights.keySet();
+        Iterator<Node> it   =   treeNodes.iterator();
+        
+        for(int i = 0; it.hasNext(); i++)
+        {
+            List rowList            =   new ArrayList();
+            RankingAgent nextAgent  =   (RankingAgent) it.next();
+            int ID                  =   nextAgent.getID();
+            boolean authentic       =   nextAgent.isAuthentic();
+            
+            rowList.add(ID);
+            rowList.add(authentic);
+            
+            if(isTreeSizeMode())
+            {
+                int treeSize            =   treeSizes.get(nextAgent);
+                rowList.add(treeSize);
+                
+                int maxTreeSize         =   i == 0? getMaxTreeSize() : 0;
+                double averageTreeSize  =   i == 0? getAverage(false) : 0.0;
+                
+                rowList.add(maxTreeSize);
+                rowList.add(averageTreeSize);
+            }
+            
+            if(isTreeHeightMode())
+            {
+                int treeHeight      =   maxTreeHeights.get(nextAgent);
+                rowList.add(treeHeight);
+                
+                int maxTreeHeight           =   i == 0? getMaxTreeHeight() : 0;
+                double averageTreeHeight    =   i == 0? getAverage(true) : 0;
+                
+                rowList.add(maxTreeHeight);
+                rowList.add(averageTreeHeight);
+            }
+            
+            model.addRow(rowList.toArray());
+        }
+        
+        return model;
     }
     
     public DefaultTableModel getTreeSizeModel()
