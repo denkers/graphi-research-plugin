@@ -4,9 +4,10 @@
 //  https://github.com/denkers/graphi-research-plugin
 //======================================================
 
-package com.graphi.network;
+package com.graphi.network.data;
 
 import com.graphi.graph.Node;
+import com.graphi.network.RankingAgent;
 import java.util.List;
 
 public class RankingAgentRowTransformer extends AgentRowTransformer

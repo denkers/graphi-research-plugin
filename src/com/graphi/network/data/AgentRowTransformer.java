@@ -4,9 +4,10 @@
 //  https://github.com/denkers/graphi-research-plugin
 //======================================================
 
-package com.graphi.network;
+package com.graphi.network.data;
 
 import com.graphi.graph.Node;
+import com.graphi.network.InfluenceAgent;
 import com.graphi.util.transformer.NodeRowListTransformer;
 import java.util.List;
 
