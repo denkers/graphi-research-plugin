@@ -11,41 +11,46 @@ import com.graphi.network.InfluenceAgent;
 import java.util.HashSet;
 import java.util.Set;
 
-public class InfluenceMeasure 
+public class PopulationMeasure 
 {
+    public static final int RECORD_INFLUENCE_MODE   =   0;
+    public static final int RECORD_AUTH_MODE        =   1;
+    public static final int RECORD_BOTH_MODE        =   2;
+    
     private int populationSize;
     private Set<Node> influencedAgents;
     private Set<Node> unauthenticAgents;
-    private boolean recordUnauthenticAgents;
+    private int recordMode;
     
-    public InfluenceMeasure()
+    public PopulationMeasure()
     {
-        this(0, false);
+        this(0, 0);
     }
     
-    public InfluenceMeasure(int populationSize, boolean recordUnauthenticAgents)
+    public PopulationMeasure(int populationSize, int recordMode)
     {
-        this(populationSize, new HashSet<>(), recordUnauthenticAgents);
+        this(populationSize, new HashSet<>(), recordMode);
     }
     
-    public InfluenceMeasure(int populationSize, Set<Node> nodes, boolean recordUnauthenticAgents)
+    public PopulationMeasure(int populationSize, Set<Node> nodes, int recordMode)
     {
         this.populationSize             =   populationSize;
-        this.recordUnauthenticAgents    =   recordUnauthenticAgents;
+        this.recordMode                 =   recordMode;
         influencedAgents                =   nodes.isEmpty()? nodes : new HashSet<>(nodes);
         unauthenticAgents               =   new HashSet<>();
     }
     
     public boolean addAgent(Node node)
     {
-        if(node != null && node instanceof InfluenceAgent)
+        if(node != null)
         {
             InfluenceAgent agent    =   (InfluenceAgent) node;
             if(!agent.isInfluenced()) return false;
             
-            influencedAgents.add(agent);
+            if(recordMode == RECORD_INFLUENCE_MODE || recordMode == RECORD_BOTH_MODE)
+                influencedAgents.add(agent);
             
-            if(recordUnauthenticAgents && !agent.isAuthentic())
+            if((recordMode == RECORD_AUTH_MODE || recordMode == RECORD_BOTH_MODE) && !agent.isAuthentic())
                 unauthenticAgents.add(agent);
                 
             return true;
@@ -101,15 +106,13 @@ public class InfluenceMeasure
         return unauthenticAgents;
     }
 
-    public boolean isRecordUnauthenticAgents() 
+    public int getRecordMode() 
     {
-        return recordUnauthenticAgents;
+        return recordMode;
     }
 
-    public void setRecordUnauthenticAgents(boolean recordUnauthenticAgents)
+    public void setRecordMode(int recordMode)
     {
-        this.recordUnauthenticAgents = recordUnauthenticAgents;
+        this.recordMode =   recordMode;
     }
-    
-    
 }
