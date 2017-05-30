@@ -9,6 +9,7 @@ package com.graphi.network.data;
 import com.graphi.graph.Node;
 import com.graphi.network.RankingAgent;
 import java.util.Map;
+import java.util.Set;
 
 public class TreeMeasure 
 {
@@ -62,7 +63,22 @@ public class TreeMeasure
         
         else return false;
     }
+    
+    public double getAverage(boolean treeHeight)
+    {
+        Map<Node, Integer> treeRecordings   =   treeHeight? maxTreeHeights : treeSizes;
+        if(treeRecordings == null || treeRecordings.isEmpty()) return 0.0;
+        
+        Set<Node> trees                     =   treeRecordings.keySet();
+        int numTrees                        =   trees.size();
+        int total                           =   0;
+        
+        for(Node tree : trees)
+            total += treeRecordings.get(tree);
 
+        return (double) total / (double) numTrees;
+    }
+    
     public int getPopulationSize() 
     {
         return populationSize;
