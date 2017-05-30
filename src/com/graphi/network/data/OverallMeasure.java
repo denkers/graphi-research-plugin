@@ -18,6 +18,53 @@ public class OverallMeasure
     {
         return GraphPanel.getInstance().getPlaybackPanel().getGraphPlayback().getEntries();
     }
+    
+    public DefaultTableModel getOverallTreeModel(TreeMeasure treeMeasure)
+    {
+        DefaultTableModel model     =   new DefaultTableModel();
+        List<PlaybackEntry> entries =   getEntries();
+        model.addColumn("Time Unit");
+        
+        if(treeMeasure.isTreeSizeMode())
+        {
+            model.addColumn("Max Tree Size");
+            model.addColumn("Average Tree Size");
+        }
+        
+        if(treeMeasure.isTreeHeightMode())
+        {
+            model.addColumn("Max Tree Height");
+            model.addColumn("Average Tree Height");
+        }
+        
+        for(int i = 0 ; i < entries.size(); i++)
+        {
+            DefaultTableModel currentModel      =   entries.get(i).getComputationModel().getModel();
+            List rowList                        =   new ArrayList();
+            rowList.add(i);
+            
+            if(treeMeasure.isTreeSizeMode())
+            {
+                int maxSize       =   (int) currentModel.getValueAt(0, 3);
+                double avgSize    =   (double) currentModel.getValueAt(0, 4);
+                rowList.add(maxSize);
+                rowList.add(avgSize);
+            }
+            
+            if(treeMeasure.isTreeHeightMode())
+            {
+                int col             =   model.getColumnCount() > 3? 6 : 3;
+                int maxTreeHeight   =   (int) currentModel.getValueAt(0, col);
+                double avgHeight    =   (double) currentModel.getValueAt(0, col + 1);
+                rowList.add(maxTreeHeight);
+                rowList.add(avgHeight);
+            }
+            
+            model.addRow(rowList.toArray());
+        }
+        
+        return model;
+    }
 
     public DefaultTableModel getOverallPopulationModel(PopulationMeasure populationMeasure)
     {
