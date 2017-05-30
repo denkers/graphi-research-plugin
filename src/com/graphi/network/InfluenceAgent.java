@@ -110,6 +110,7 @@ public class InfluenceAgent extends Node
         target.setInfluenced(true);
         target.setInfluencer(this);
         target.setAuthentic(authentic);
+        target.setFill(fill);
     }
     
     public boolean isInfluenced() 

@@ -9,6 +9,7 @@ package com.graphi.network;
 import com.graphi.graph.Edge;
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,12 +22,16 @@ public class NetworkSeeder
 {
     public static final int RANDOM_NODE_SEED    =   0;
     public static final int RANDOM_FRIEND_SEED  =   1;
+    public static final Color AUTH_COLOUR       =   Color.GREEN;
+    public static final Color UNAUTH_COLOUR     =   Color.RED;
     
     private Set<Node> seeds;
     private int seedMethod;
     private double seedPercent;
     private boolean authenticityMode;
     private double authenticPercent;
+    private boolean colourAuth;
+    private boolean colourInfluence;
     
     public NetworkSeeder()
     {
@@ -45,6 +50,8 @@ public class NetworkSeeder
         seeds                   =   new HashSet<>();
         authenticityMode        =   false;
         authenticPercent        =   0.0;
+        colourAuth              =   false;
+        colourInfluence         =   false;
     }
     
     public void generateSeeds(Map<Integer, Node> nodes, Graph<Node, Edge> graph)
@@ -105,6 +112,9 @@ public class NetworkSeeder
         {
             InfluenceAgent agentSeed    =   (InfluenceAgent) seed;
             agentSeed.setInfluenced(true);
+            
+            if(colourInfluence)
+                agentSeed.setFill(generateRandomSeedColour());
         }
     }
     
@@ -115,14 +125,33 @@ public class NetworkSeeder
             double falsePercent     =   1.0 - authenticPercent;
             int falseSize           =   (int) (seeds.size() * falsePercent);
             List<Node> seedsCopy    =   new ArrayList<>(seeds);
+            int i                   =   0;
             Collections.shuffle(seedsCopy);
             
-            for(int i = 0; i < falseSize; i++)
+            for(i = 0; i < falseSize; i++)
             {
                 InfluenceAgent agentSeed    =   (InfluenceAgent) seedsCopy.get(i);
                 agentSeed.setAuthentic(false);
+                
+                if(colourAuth)
+                    agentSeed.setFill(UNAUTH_COLOUR);
+            }
+            
+            if(colourAuth)
+            {
+                for(; i < seedsCopy.size(); i++)
+                    seedsCopy.get(i).setFill(AUTH_COLOUR);
             }
         }
+    }
+    
+    public Color generateRandomSeedColour()
+    {
+        double hue      =   Math.random();
+        int rgb         =   java.awt.Color.HSBtoRGB((float) hue, 0.5f, 0.5f);
+        Color colour    =   new Color(rgb);
+        
+        return colour;
     }
     
     public void enableAuthenticityMode(double authenticPercent)
@@ -169,5 +198,25 @@ public class NetworkSeeder
     public double getAuthenticPercent()
     {
         return authenticPercent;
+    }
+    
+    public boolean isColourAuth() 
+    {
+        return colourAuth;
+    }
+
+    public void setColourAuth(boolean colourAuth) 
+    {
+        this.colourAuth = colourAuth;
+    }
+
+    public boolean isColourInfluence()
+    {
+        return colourInfluence;
+    }
+
+    public void setColourInfluence(boolean colourInfluence) 
+    {
+        this.colourInfluence = colourInfluence;
     }
 }
