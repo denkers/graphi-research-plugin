@@ -8,8 +8,11 @@ package com.graphi.network.data;
 
 import com.graphi.graph.Node;
 import com.graphi.network.InfluenceAgent;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.swing.table.DefaultTableModel;
 
 public class PopulationMeasure 
 {
@@ -47,16 +50,37 @@ public class PopulationMeasure
             InfluenceAgent agent    =   (InfluenceAgent) node;
             if(!agent.isInfluenced()) return false;
             
-            if(recordMode == RECORD_INFLUENCE_MODE || recordMode == RECORD_BOTH_MODE)
+            if(isInfluenceMode())
                 influencedAgents.add(agent);
             
-            if((recordMode == RECORD_AUTH_MODE || recordMode == RECORD_BOTH_MODE) && !agent.isAuthentic())
+            if(isAuthMode() && !agent.isAuthentic())
                 unauthenticAgents.add(agent);
                 
             return true;
         }
         
         else return false;
+    }
+    
+    public DefaultTableModel getPopulationModel()
+    {
+        DefaultTableModel model     =   new DefaultTableModel();
+        List<Double> dataList       =   new ArrayList<>();
+        
+        if(isInfluenceMode())
+        {
+            model.addColumn("Influenced Population Portion");
+            dataList.add(computeInflencePopulationRatio());
+        }
+        
+        if(isAuthMode())
+        {
+            model.addColumn("Unauthentic Population Portion");
+            dataList.add(computeUnauthenticPopulationRatio());
+        }
+        
+        model.addRow(dataList.toArray());
+        return model;
     }
     
     public double computeUnauthenticPopulationRatio()
@@ -114,5 +138,15 @@ public class PopulationMeasure
     public void setRecordMode(int recordMode)
     {
         this.recordMode =   recordMode;
+    }
+    
+    public boolean isInfluenceMode()
+    {
+        return recordMode == RECORD_INFLUENCE_MODE || recordMode == RECORD_BOTH_MODE;
+    }
+    
+    public boolean isAuthMode()
+    {
+        return recordMode == RECORD_AUTH_MODE || recordMode == RECORD_BOTH_MODE;
     }
 }

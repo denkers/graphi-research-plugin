@@ -8,8 +8,10 @@ package com.graphi.network.data;
 
 import com.graphi.graph.Node;
 import com.graphi.network.RankingAgent;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.table.DefaultTableModel;
 
 public class TreeMeasure 
 {
@@ -42,7 +44,7 @@ public class TreeMeasure
         {
             RankingAgent agent  =   (RankingAgent) node;
             
-            if(recordMode == RECORD_TREE_HEIGHT || recordMode == RECORD_BOTH_MODE)
+            if(isTreeHeightMode())
             {
                 RankingAgent treeSource =   agent.getTreeRootAgent();
                 int depth               =   agent.getInfluencedTreeDepth();
@@ -57,7 +59,7 @@ public class TreeMeasure
                     maxTreeHeightNode   =   treeSource;
             }
             
-            else if(recordMode == RECORD_TREE_SIZE || recordMode == RECORD_BOTH_MODE)
+            else if(isTreeSizeMode())
             {
                 RankingAgent treeSource =   agent.getTreeRootAgent();
                 int treeSize            =   treeSizes.containsKey(treeSource)? (treeSizes.get(treeSource) + 1) : 1;
@@ -86,6 +88,72 @@ public class TreeMeasure
             total += treeRecordings.get(tree);
 
         return (double) total / (double) numTrees;
+    }
+    
+    public DefaultTableModel getTreeSizeModel()
+    {
+        DefaultTableModel model =   new DefaultTableModel();
+        model.addColumn("Tree Source ID");
+        model.addColumn("Authentic Tree");
+        model.addColumn("Tree Size");
+        model.addColumn("Max Tree Size");
+        model.addColumn("Average Tree Size");
+        
+        int maxTreeSize     =   getMaxTreeSize();
+        double average      =   getAverage(false);
+        Set<Node> treeNodes =   treeSizes.keySet();
+        Iterator<Node> it   =   treeNodes.iterator();
+        
+        for(int i = 0; it.hasNext(); i++)
+        {
+            RankingAgent nextAgent  =   (RankingAgent) it.next();
+            int ID                  =   nextAgent.getID();
+            boolean authentic       =   nextAgent.isAuthentic();
+            int treeSize            =   treeSizes.get(nextAgent);
+            
+            if(i > 0)
+            {
+                maxTreeSize     =   0;
+                average         =   0;
+            }
+            
+            model.addRow(new Object[] {ID, authentic, treeSize, maxTreeSize, average});
+        }
+        
+        return model;
+    }
+    
+    public DefaultTableModel getTreeHeightModel()
+    {
+        DefaultTableModel model =   new DefaultTableModel();
+        model.addColumn("Tree Source ID");
+        model.addColumn("Authentic Tree");
+        model.addColumn("Tree Height");
+        model.addColumn("Max Tree Height");
+        model.addColumn("Average Tree Height");
+        
+        int maxTreeHeight   =   getMaxTreeHeight();
+        double average      =   getAverage(true);
+        Set<Node> treeNodes =   maxTreeHeights.keySet();
+        Iterator<Node> it   =   treeNodes.iterator();
+        
+        for(int i = 0; it.hasNext(); i++)
+        {
+            RankingAgent nextAgent  =   (RankingAgent) it.next();
+            int ID                  =   nextAgent.getID();
+            boolean authentic       =   nextAgent.isAuthentic();
+            int treeHeight          =   maxTreeHeights.get(nextAgent);
+            
+            if(i > 0)
+            {
+                maxTreeHeight   =   0;
+                average         =   0;
+            }
+            
+            model.addRow(new Object[] {ID, authentic, treeHeight, maxTreeHeight, average});
+        }
+        
+        return model;
     }
     
     public int getMaxTreeHeight()
@@ -142,5 +210,15 @@ public class TreeMeasure
     public Node getMaxTreeHeightNode() 
     {
         return maxTreeHeightNode;
+    }
+    
+    public boolean isTreeHeightMode()
+    {
+        return recordMode == RECORD_TREE_HEIGHT || recordMode == RECORD_BOTH_MODE;
+    }
+    
+    public boolean isTreeSizeMode()
+    {
+        return recordMode == RECORD_TREE_SIZE || recordMode == RECORD_BOTH_MODE;
     }
 }
