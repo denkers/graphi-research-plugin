@@ -109,10 +109,9 @@ public class DiffusionController
         }
     }
     
+    
     public void runDiffusion()
     {
-        initDiffusion();
-        
         while(canDiffuse())
             pollAgents();
     }

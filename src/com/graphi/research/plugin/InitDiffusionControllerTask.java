@@ -77,6 +77,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         DiffusionController diffusionController     =   getDiffusionController();
         
         plugin.setDiffusionController(diffusionController);
+        diffusionController.initDiffusion();
     }
     
     public DiffusionController getDiffusionController()
