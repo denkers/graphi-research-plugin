@@ -7,6 +7,7 @@
 package com.graphi.research.plugin;
 
 import com.graphi.graph.GraphDataManager;
+import com.graphi.network.DiffusionController;
 import com.graphi.network.InfluenceAgentFactory;
 import com.graphi.plugins.AbstractPlugin;
 import com.graphi.util.factory.NodeFactory;
@@ -15,10 +16,12 @@ public class ResearchPlugin extends AbstractPlugin
 {
     public static final String PLUGIN_NAME        =   "AUT Research Plugin";
     public static final String PLUGIN_DESCRIPTION =   "Agent-based network diffusion research plugin";   
+    private DiffusionController diffusionController;
 
     public ResearchPlugin()
     {
-        displayHandler  =   new ResearchDisplayHandler();
+        displayHandler      =   new ResearchDisplayHandler();
+        diffusionController =   new DiffusionController();   
     }
     
     @Override
@@ -49,4 +52,13 @@ public class ResearchPlugin extends AbstractPlugin
     @Override
     public void onPluginLoad() {}
 
+    public DiffusionController getDiffusionController() 
+    {
+        return diffusionController;
+    }
+
+    public void setDiffusionController(DiffusionController diffusionController)
+    {
+        this.diffusionController = diffusionController;
+    }
 }

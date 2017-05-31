@@ -6,6 +6,7 @@
 
 package com.graphi.network.data;
 
+import com.graphi.display.layout.DataPanel;
 import com.graphi.graph.Node;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,6 +24,13 @@ public abstract class AbstractMeasure
     public abstract boolean addAgent(Node node);
     
     public abstract DefaultTableModel getMeasureModel();
+    
+    public static void setComputationModel(DefaultTableModel model, String context)
+    {
+        DataPanel dataPanel     =   DataPanel.getInstance();
+        dataPanel.setComputationModel(model);
+        dataPanel.setComputationContext(context);
+    }
     
     public int getPopulationSize() 
     {

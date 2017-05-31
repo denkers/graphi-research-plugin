@@ -6,6 +6,7 @@
 
 package com.graphi.network.data;
 
+import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
 import com.graphi.network.InfluenceAgent;
 import java.util.ArrayList;
@@ -25,7 +26,12 @@ public class PopulationMeasure extends AbstractMeasure
     
     public PopulationMeasure()
     {
-        this(0, 0);
+        this(-1, 0);
+    }
+    
+    public PopulationMeasure(int recordMode)
+    {
+        this(-1, recordMode);
     }
     
     public PopulationMeasure(int populationSize, int recordMode)
@@ -83,14 +89,24 @@ public class PopulationMeasure extends AbstractMeasure
         return model;
     }
     
+    public void setGlobalPopulationSize()
+    {
+        if(populationSize == -1)
+            populationSize  =   GraphDataManager.getGraphDataInstance().getGraph().getVertices().size();
+    }
+    
     public double computeUnauthenticPopulationRatio()
     {
+        setGlobalPopulationSize();
+        
         if(unauthenticAgents.isEmpty()) return 0.0;
         return (double) unauthenticAgents.size() / (double) populationSize;
     }
     
     public double computeInflencePopulationRatio()
     {
+        setGlobalPopulationSize();
+        
         if(influencedAgents.isEmpty()) return 0.0;
         return (double) influencedAgents.size() / (double) populationSize;
     }

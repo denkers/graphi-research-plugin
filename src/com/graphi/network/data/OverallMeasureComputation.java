@@ -152,13 +152,6 @@ public class OverallMeasureComputation
         return (double) total / (double) numValues;
     }
     
-    public static void showOverallModel(DefaultTableModel model, String context)
-    {
-        DataPanel dataPanel     =   DataPanel.getInstance();
-        dataPanel.setComputationModel(model);
-        dataPanel.setComputationContext(context);
-    }
-    
     private static List<PlaybackEntry> getEntries()
     {
         return GraphPanel.getInstance().getPlaybackPanel().getGraphPlayback().getEntries();

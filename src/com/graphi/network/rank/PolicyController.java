@@ -9,7 +9,6 @@ package com.graphi.network.rank;
 import com.graphi.display.layout.DataPanel;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
-import com.graphi.network.InfluenceAgentFactory;
 import com.graphi.network.RankingAgent;
 import com.graphi.network.RankingAgentFactory;
 import com.graphi.network.data.RankingAgentDataModel;

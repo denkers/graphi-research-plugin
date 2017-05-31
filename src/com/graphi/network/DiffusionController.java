@@ -13,6 +13,7 @@ import com.graphi.graph.Edge;
 import com.graphi.graph.GraphData;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.data.AbstractMeasure;
 import com.graphi.network.data.AgentDataModel;
 import com.graphi.network.data.AgentRowTransformer;
 import com.graphi.network.rank.PolicyController;
@@ -22,6 +23,7 @@ import edu.uci.ics.jung.graph.Graph;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.table.DefaultTableModel;
 
 public class DiffusionController 
 {
@@ -35,9 +37,15 @@ public class DiffusionController
     private NetworkSeeder seeder;
     private NetworkGenerator networkGenerator;
     private PolicyController policyController;
+    private AbstractMeasure measure;
     private int timeUnit;
     private int maxUnits;
     private int diffusionMode;
+    
+    public DiffusionController()
+    {
+        this(null);
+    }
     
     public DiffusionController(NetworkGenerator networkGenerator)
     {
@@ -56,7 +64,7 @@ public class DiffusionController
         this.diffusionMode      =   diffusionMode;
         timeUnit                =   0;
         maxUnits                =   DEFAULT_MAX_UNITS;
-        activeAgents            =   null;
+        activeAgents            =   new HashSet<>();
     }
     
     public void pollAgents()
@@ -79,7 +87,7 @@ public class DiffusionController
                     if(isInfluenceMode())
                     {
                         agent.influenceAgent(neighbourAgent);
-                        activeAgents.add(neighbourAgent);
+                        addActiveAgent(neighbourAgent);
                     }
                     
                     else
@@ -95,8 +103,18 @@ public class DiffusionController
         if(policyController != null && isPolicyMode())
         {
             Set<Node> adoptedAgents     =   policyController.pollPendingAgents();
-            activeAgents.addAll(adoptedAgents);
+            
+            for(Node agent : adoptedAgents)
+                addActiveAgent(agent);
         }
+    }
+    
+    public void runDiffusion()
+    {
+        initDiffusion();
+        
+        while(canDiffuse())
+            pollAgents();
     }
     
     public boolean canDiffuse()
@@ -106,6 +124,9 @@ public class DiffusionController
     
     public void initDiffusion()
     {
+        activeAgents.clear();
+        timeUnit    =   0;
+        
         generateNetwork();
         generateSeeds();
     }
@@ -114,7 +135,10 @@ public class DiffusionController
     {
         GraphData graphData     =   GraphDataManager.getGraphDataInstance();
         seeder.generateSeeds(graphData.getNodes(), graphData.getGraph());
-        activeAgents            =   new HashSet<>(seeder.getSeeds());
+        Set<Node> seeds         =   seeder.getSeeds();
+        
+        for(Node seed : seeds)
+            addActiveAgent(seed);
     }
     
     public void generateNetwork()
@@ -132,8 +156,21 @@ public class DiffusionController
     {
         PlaybackControlPanel pbPanel    =   GraphPanel.getInstance().getPlaybackPanel();
         String name                     =   "Time Unit (" + timeUnit + ")";
+        
+        if(measure != null)
+        {
+            DefaultTableModel model     =   measure.getMeasureModel();
+            AbstractMeasure.setComputationModel(model, name);
+        }
+        
         pbPanel.addRecordedGraph(name, new Date(), true, true, true);
         timeUnit++;
+    }
+    
+    public void addActiveAgent(Node node)
+    {
+        activeAgents.add(node);
+        if(measure != null) measure.addAgent(node);
     }
     
     public void initInfluenceAgentManipulators()
@@ -210,6 +247,21 @@ public class DiffusionController
     public void setMaxUnits(int maxUnits)
     {
         this.maxUnits = maxUnits;
+    }
+
+    public AbstractMeasure getMeasure() 
+    {
+        return measure;
+    }
+
+    public void setMeasure(AbstractMeasure measure) 
+    {
+        this.measure = measure;
+    }
+    
+    public boolean hasMeasure()
+    {
+        return measure != null;
     }
 }
     
