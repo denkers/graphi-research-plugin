@@ -6,11 +6,9 @@
 
 package com.graphi.research.plugin;
 
-import com.graphi.graph.GraphDataManager;
 import com.graphi.network.DiffusionController;
-import com.graphi.network.InfluenceAgentFactory;
 import com.graphi.plugins.AbstractPlugin;
-import com.graphi.util.factory.NodeFactory;
+import com.graphi.tasks.TaskManager;
 
 public class ResearchPlugin extends AbstractPlugin
 {
@@ -40,14 +38,14 @@ public class ResearchPlugin extends AbstractPlugin
     @Override
     public void onPluginActivate() 
     {
-        GraphDataManager.getGraphDataInstance().setNodeFactory(new InfluenceAgentFactory());
+        TaskManager taskManager =   TaskManager.getInstance();
+        taskManager.registerTask(new InitDiffusionControllerTask());
+        taskManager.registerTask(new DiffusionTask());
+        taskManager.registerTask(new OverallMeasureTask());
     }
     
     @Override
-    public void onPluginDeactivate() 
-    {
-        GraphDataManager.getGraphDataInstance().setNodeFactory(new NodeFactory());
-    }
+    public void onPluginDeactivate() {}
 
     @Override
     public void onPluginLoad() {}
