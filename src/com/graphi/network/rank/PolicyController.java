@@ -6,8 +6,14 @@
 
 package com.graphi.network.rank;
 
+import com.graphi.display.layout.DataPanel;
+import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.InfluenceAgentFactory;
 import com.graphi.network.RankingAgent;
+import com.graphi.network.RankingAgentFactory;
+import com.graphi.network.data.RankingAgentDataModel;
+import com.graphi.network.data.RankingAgentRowTransformer;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,14 +29,17 @@ public class PolicyController
     private Map<Node, Integer> treeScores;
     private int policyMode;
     
-    public PolicyController()
+    public PolicyController(int policyMode)
     {
+        this.policyMode         =   policyMode;
         pendingInfluenceAgents  =   new HashSet<>();
         treeScores              =   new HashMap<>();
     }
     
-    public void pollPendingAgents()
+    public Set<Node> pollPendingAgents()
     {
+        Set<Node> adoptedAgents     =   new HashSet<>();
+        
         for(Node pendingAgent: pendingInfluenceAgents)
         {
             RankingAgent agent              =   (RankingAgent) pendingAgent;
@@ -48,11 +57,26 @@ public class PolicyController
                 }
                 
                 optimalInfluencer.influenceAgent(agent);
+                adoptedAgents.add(agent);
                 agent.clearInfluenceOffers();
             }
         }
         
         pendingInfluenceAgents.clear();
+        return adoptedAgents;
+    }
+    
+    public void initRankingAgentManipulators()
+    {
+        Comparator<Node> comparator             =   policyMode == TRENDING_TREE_MODE? new TrendingTreeComparator(this) : new TrendingSourceComparator();
+        RankingAgentFactory factory             =   new RankingAgentFactory(comparator);
+        RankingAgentDataModel agentModel        =   new RankingAgentDataModel();   
+        RankingAgentRowTransformer transformer  =   new RankingAgentRowTransformer();
+        DataPanel dataPanel                     =   DataPanel.getInstance();
+        
+        GraphDataManager.getGraphDataInstance().setNodeFactory(factory);
+        dataPanel.setVertexDataModel(agentModel);
+        dataPanel.setNodeRowListTransformer(transformer);
     }
     
     public Comparator<Node> getPolicyComparator()

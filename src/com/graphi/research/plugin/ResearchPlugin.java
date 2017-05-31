@@ -6,7 +6,10 @@
 
 package com.graphi.research.plugin;
 
+import com.graphi.graph.GraphDataManager;
+import com.graphi.network.InfluenceAgentFactory;
 import com.graphi.plugins.AbstractPlugin;
+import com.graphi.util.factory.NodeFactory;
 
 public class ResearchPlugin extends AbstractPlugin
 {
@@ -30,13 +33,20 @@ public class ResearchPlugin extends AbstractPlugin
         name        =   PLUGIN_NAME;
         description =   PLUGIN_DESCRIPTION;
     }
+    
+    @Override
+    public void onPluginActivate() 
+    {
+        GraphDataManager.getGraphDataInstance().setNodeFactory(new InfluenceAgentFactory());
+    }
+    
+    @Override
+    public void onPluginDeactivate() 
+    {
+        GraphDataManager.getGraphDataInstance().setNodeFactory(new NodeFactory());
+    }
 
     @Override
     public void onPluginLoad() {}
 
-    @Override
-    public void onPluginActivate() {}
-
-    @Override
-    public void onPluginDeactivate() {}
 }

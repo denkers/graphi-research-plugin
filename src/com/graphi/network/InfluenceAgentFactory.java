@@ -7,9 +7,9 @@
 package com.graphi.network;
 
 import com.graphi.graph.Node;
-import com.graphi.util.factory.GraphObjFactory;
+import com.graphi.util.factory.NodeFactory;
 
-public class InfluenceAgentFactory extends GraphObjFactory<Node>
+public class InfluenceAgentFactory extends NodeFactory
 {
     public InfluenceAgentFactory()
     {

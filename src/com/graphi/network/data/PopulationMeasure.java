@@ -14,16 +14,14 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
-public class PopulationMeasure 
+public class PopulationMeasure extends AbstractMeasure
 {
     public static final int RECORD_INFLUENCE_MODE   =   0;
     public static final int RECORD_AUTH_MODE        =   1;
     public static final int RECORD_BOTH_MODE        =   2;
     
-    private int populationSize;
     private Set<Node> influencedAgents;
     private Set<Node> unauthenticAgents;
-    private int recordMode;
     
     public PopulationMeasure()
     {
@@ -43,6 +41,7 @@ public class PopulationMeasure
         unauthenticAgents               =   new HashSet<>();
     }
     
+    @Override
     public boolean addAgent(Node node)
     {
         if(node != null)
@@ -62,7 +61,8 @@ public class PopulationMeasure
         else return false;
     }
     
-    public DefaultTableModel getPopulationModel()
+    @Override
+    public DefaultTableModel getMeasureModel()
     {
         DefaultTableModel model     =   new DefaultTableModel();
         List<Double> dataList       =   new ArrayList<>();
@@ -104,16 +104,6 @@ public class PopulationMeasure
     {
         return unauthenticAgents.size();
     }
-    
-    public int getPopulationSize() 
-    {
-        return populationSize;
-    }
-
-    public void setPopulationSize(int populationSize)
-    {
-        this.populationSize = populationSize;
-    }
 
     public Set<Node> getInfluencedAgents() 
     {
@@ -128,16 +118,6 @@ public class PopulationMeasure
     public Set<Node> getUnauthenticAgents() 
     {
         return unauthenticAgents;
-    }
-
-    public int getRecordMode() 
-    {
-        return recordMode;
-    }
-
-    public void setRecordMode(int recordMode)
-    {
-        this.recordMode =   recordMode;
     }
     
     public boolean isInfluenceMode()

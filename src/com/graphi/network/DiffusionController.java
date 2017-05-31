@@ -6,12 +6,15 @@
 
 package com.graphi.network;
 
+import com.graphi.display.layout.DataPanel;
 import com.graphi.display.layout.GraphPanel;
 import com.graphi.display.layout.controls.PlaybackControlPanel;
 import com.graphi.graph.Edge;
 import com.graphi.graph.GraphData;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.data.AgentDataModel;
+import com.graphi.network.data.AgentRowTransformer;
 import com.graphi.network.rank.PolicyController;
 import com.graphi.sim.generator.NetworkGenerator;
 import com.graphi.util.factory.EdgeFactory;
@@ -26,12 +29,14 @@ public class DiffusionController
     public static final int POLICY_MODE         =   1;
     public static final int STANDARD_AUTH_MODE  =   2;
     public static final int POLICY_AUTH_MODE    =   3;
+    public static final int DEFAULT_MAX_UNITS   =   10;
     
     private Set<Node> activeAgents;
     private NetworkSeeder seeder;
     private NetworkGenerator networkGenerator;
     private PolicyController policyController;
     private int timeUnit;
+    private int maxUnits;
     private int diffusionMode;
     
     public DiffusionController(NetworkGenerator networkGenerator)
@@ -50,6 +55,7 @@ public class DiffusionController
         this.seeder             =   seeder;
         this.diffusionMode      =   diffusionMode;
         timeUnit                =   0;
+        maxUnits                =   DEFAULT_MAX_UNITS;
         activeAgents            =   null;
     }
     
@@ -70,20 +76,38 @@ public class DiffusionController
                 
                 if(influenceSuccess) 
                 {
-                    if(diffusionMode == STANDARD_MODE || diffusionMode == STANDARD_AUTH_MODE)
+                    if(isInfluenceMode())
+                    {
                         agent.influenceAgent(neighbourAgent);
+                        activeAgents.add(neighbourAgent);
+                    }
                     
                     else
                     {
                         ((RankingAgent) agent).addInfluenceOffer((RankingAgent) neighbourAgent);
-                        if(policyController != null) policyController.addPendingAgent(neighbourAgent);
+                        if(policyController != null) 
+                            policyController.addPendingAgent(neighbourAgent);
                     }
                 }
             }
         }
         
-        if(policyController != null && (diffusionMode == POLICY_MODE || diffusionMode == POLICY_AUTH_MODE))
-            policyController.pollPendingAgents();
+        if(policyController != null && isPolicyMode())
+        {
+            Set<Node> adoptedAgents     =   policyController.pollPendingAgents();
+            activeAgents.addAll(adoptedAgents);
+        }
+    }
+    
+    public boolean canDiffuse()
+    {
+        return !activeAgents.isEmpty() && timeUnit < maxUnits;
+    }
+    
+    public void initDiffusion()
+    {
+        generateNetwork();
+        generateSeeds();
     }
     
     public void generateSeeds()
@@ -110,6 +134,17 @@ public class DiffusionController
         String name                     =   "Time Unit (" + timeUnit + ")";
         pbPanel.addRecordedGraph(name, new Date(), true, true, true);
         timeUnit++;
+    }
+    
+    public void initInfluenceAgentManipulators()
+    {
+        AgentDataModel model            =   new AgentDataModel();
+        AgentRowTransformer transformer =   new AgentRowTransformer();   
+        DataPanel dataPanel             =   DataPanel.getInstance();
+        
+        GraphDataManager.getGraphDataInstance().setNodeFactory(new InfluenceAgentFactory());
+        dataPanel.setVertexDataModel(model);
+        dataPanel.setNodeRowListTransformer(transformer);
     }
     
     public NetworkSeeder getSeeder() 
@@ -156,4 +191,25 @@ public class DiffusionController
     {
         this.policyController = policyController;
     }
+    
+    public boolean isInfluenceMode()
+    {
+        return diffusionMode == STANDARD_MODE || diffusionMode == STANDARD_AUTH_MODE;
+    }
+    
+    public boolean isPolicyMode()
+    {
+        return diffusionMode == POLICY_MODE || diffusionMode == POLICY_AUTH_MODE;
+    }
+
+    public int getMaxUnits()
+    {
+        return maxUnits;
+    }
+
+    public void setMaxUnits(int maxUnits)
+    {
+        this.maxUnits = maxUnits;
+    }
 }
+    

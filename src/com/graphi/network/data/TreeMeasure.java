@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
-public class TreeMeasure 
+public class TreeMeasure extends AbstractMeasure
 {
     public static final int RECORD_TREE_HEIGHT  =   0;
     public static final int RECORD_TREE_SIZE    =   1;
@@ -24,8 +24,6 @@ public class TreeMeasure
     private Map<Node, Integer> maxTreeHeights;
     private Map<Node, Integer> treeSizes;
     private Node maxTreeSizeNode, maxTreeHeightNode;
-    private int populationSize;
-    private int recordMode;
     
     public TreeMeasure()
     {
@@ -40,6 +38,7 @@ public class TreeMeasure
         maxTreeHeightNode       =   null;
     }
     
+    @Override
     public boolean addAgent(Node node)
     {
         if(node != null)
@@ -49,16 +48,20 @@ public class TreeMeasure
             if(isTreeHeightMode())
             {
                 RankingAgent treeSource =   agent.getTreeRootAgent();
-                int depth               =   agent.getInfluencedTreeDepth();
                 
                 if(!maxTreeHeights.containsKey(treeSource))
                     maxTreeHeights.put(treeSource, 0);
                 
-                else if(maxTreeHeights.get(treeSource) < depth)
-                    maxTreeHeights.put(treeSource, depth);
-                
-                if(maxTreeHeightNode == null || (depth > maxTreeHeights.get(maxTreeHeightNode)))
-                    maxTreeHeightNode   =   treeSource;
+                else
+                {
+                    int depth               =   agent.getInfluencedTreeDepth();
+                    
+                    if(maxTreeHeights.get(treeSource) < depth)
+                        maxTreeHeights.put(treeSource, depth);
+
+                    if(maxTreeHeightNode == null || (depth > maxTreeHeights.get(maxTreeHeightNode)))
+                        maxTreeHeightNode   =   treeSource;
+                }
             }
             
             if(isTreeSizeMode())
@@ -92,7 +95,8 @@ public class TreeMeasure
         return (double) total / (double) numTrees;
     }
     
-    public DefaultTableModel getTreeModel()
+    @Override
+    public DefaultTableModel getMeasureModel()
     {
         DefaultTableModel model =   new DefaultTableModel();
         model.addColumn("Tree Source ID");
@@ -155,7 +159,7 @@ public class TreeMeasure
         return model;
     }
     
-    public DefaultTableModel getTreeSizeModel()
+    /*public DefaultTableModel getTreeSizeModel()
     {
         DefaultTableModel model =   new DefaultTableModel();
         model.addColumn("Tree Source ID");
@@ -219,7 +223,7 @@ public class TreeMeasure
         }
         
         return model;
-    }
+    } */
     
     public int getMaxTreeHeight()
     {
@@ -237,26 +241,6 @@ public class TreeMeasure
         else return 0;
     }
     
-    public int getPopulationSize() 
-    {
-        return populationSize;
-    }
-
-    public void setPopulationSize(int populationSize) 
-    {
-        this.populationSize = populationSize;
-    }
-
-    public int getRecordMode() 
-    {
-        return recordMode;
-    }
-
-    public void setRecordMode(int recordMode) 
-    {
-        this.recordMode = recordMode;
-    }
-
     public Map<Node, Integer> getMaxTreeHeights()
     {
         return maxTreeHeights;

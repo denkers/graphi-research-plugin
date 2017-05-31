@@ -7,10 +7,10 @@
 package com.graphi.network;
 
 import com.graphi.graph.Node;
-import com.graphi.util.factory.GraphObjFactory;
+import com.graphi.util.factory.NodeFactory;
 import java.util.Comparator;
 
-public class RankingAgentFactory extends GraphObjFactory<Node>
+public class RankingAgentFactory extends NodeFactory
 {
     private Comparator<Node> policyComparator;
     

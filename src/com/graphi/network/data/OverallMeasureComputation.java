@@ -6,20 +6,16 @@
 
 package com.graphi.network.data;
 
+import com.graphi.display.layout.DataPanel;
 import com.graphi.display.layout.GraphPanel;
 import com.graphi.sim.PlaybackEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-public class OverallMeasure 
+public class OverallMeasureComputation 
 {
-    private List<PlaybackEntry> getEntries()
-    {
-        return GraphPanel.getInstance().getPlaybackPanel().getGraphPlayback().getEntries();
-    }
-    
-    public DefaultTableModel getOverallTreeModel(TreeMeasure treeMeasure)
+    public static DefaultTableModel getOverallTreeModel(TreeMeasure treeMeasure)
     {
         DefaultTableModel model     =   new DefaultTableModel();
         List<PlaybackEntry> entries =   getEntries();
@@ -66,7 +62,7 @@ public class OverallMeasure
         return model;
     }
 
-    public DefaultTableModel getOverallPopulationModel(PopulationMeasure populationMeasure)
+    public static DefaultTableModel getOverallPopulationModel(PopulationMeasure populationMeasure)
     {
         DefaultTableModel model     =   new DefaultTableModel();
         List<PlaybackEntry> entries =   getEntries();
@@ -132,7 +128,7 @@ public class OverallMeasure
         return model;
     }
     
-    private double getChangeRate(DefaultTableModel currentModel, DefaultTableModel prevModel, int row, int col, double currentValue)
+    private static double getChangeRate(DefaultTableModel currentModel, DefaultTableModel prevModel, int row, int col, double currentValue)
     {
         if(prevModel == null || currentModel == null) return 0.0;
         
@@ -142,7 +138,7 @@ public class OverallMeasure
         return change;
     }
     
-    private double getColumnAverage(DefaultTableModel model, int col, int numValues)
+    private static double getColumnAverage(DefaultTableModel model, int col, int numValues)
     {
         int numRows     =   model.getRowCount();
         double total    =   0;
@@ -154,5 +150,17 @@ public class OverallMeasure
         }
         
         return (double) total / (double) numValues;
+    }
+    
+    public static void showOverallModel(DefaultTableModel model, String context)
+    {
+        DataPanel dataPanel     =   DataPanel.getInstance();
+        dataPanel.setComputationModel(model);
+        dataPanel.setComputationContext(context);
+    }
+    
+    private static List<PlaybackEntry> getEntries()
+    {
+        return GraphPanel.getInstance().getPlaybackPanel().getGraphPlayback().getEntries();
     }
 }
