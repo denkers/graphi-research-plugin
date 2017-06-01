@@ -24,9 +24,11 @@ import com.graphi.util.factory.EdgeFactory;
 import com.graphi.util.factory.NodeFactory;
 import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
 import edu.uci.ics.jung.graph.Graph;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
@@ -82,7 +84,8 @@ public class DiffusionController
     
     public void pollAgents()
     {
-        for(Node activeAgent : activeAgents)
+        List<Node> currentActiveAgents =   new ArrayList<>(activeAgents);
+        for(Node activeAgent : currentActiveAgents)
         {
             InfluenceAgent agent    =   (InfluenceAgent) activeAgent;
             Node optimalNeighbour   =   agent.chooseOptimalNeighbour();
@@ -120,6 +123,9 @@ public class DiffusionController
             for(Node agent : adoptedAgents)
                 addActiveAgent(agent);
         }
+        
+        DataPanel.getInstance().reloadGraphObjects();
+        GraphPanel.getInstance().repaintDisplay();
     }
     
     
@@ -128,7 +134,7 @@ public class DiffusionController
         while(canDiffuse())
         {
             pollAgents();
-            recordState();
+        //    recordState();
         }
     }
     
@@ -145,7 +151,7 @@ public class DiffusionController
         generateNetwork();
         generateSeeds();
         DataPanel.getInstance().reloadGraphObjects();
-        recordState();
+    //    recordState();
     }
     
     public void generateSeeds()
@@ -183,12 +189,14 @@ public class DiffusionController
                 ((InfluenceAgent) node).setInfluenceDecisionComparator(comp);
         }
         
+        
+        
         Node testNode   =   network.getVertices().iterator().next();
         System.out.println("Graph stats before Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
-        System.out.println("Degree before Transform: " + network.degree(testNode));
-      //  MutualNeighbourModel.transformInfluenceNetwork(network);
+        System.out.println("id= " + testNode.getID()  + " Degree before Transform: " + network.degree(testNode));
+        network =   MutualNeighbourModel.transformInfluenceNetwork(network, edgeFactory);
         System.out.println("Graph stats after Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
-        System.out.println("Degree after Transform: " + network.degree(testNode));
+        System.out.println("id= " + testNode.getID() + " Degree after Transform: " + network.degree(testNode));
         graphData.setGraph(network);
         GraphPanel.getInstance().reloadGraph();
     }

@@ -8,7 +8,10 @@ package com.graphi.network;
 
 import com.graphi.graph.Edge;
 import com.graphi.graph.Node;
+import com.graphi.util.factory.EdgeFactory;
+import com.graphi.util.factory.NodeFactory;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,11 +19,15 @@ import org.apache.commons.collections15.Factory;
 
 public class MutualNeighbourModel
 {
-    public static void transformInfluenceNetwork(Graph<Node, Edge> underlyingGraph)
+    public static Graph<Node, Edge> transformInfluenceNetwork(Graph<Node, Edge> underlyingGraph, EdgeFactory edgeFactory)
     {
         Collection<Edge> edges              =   underlyingGraph.getEdges();
-        Factory<Edge> edgeFactory           =   () -> new Edge();
+        Collection<Node> nodes              =   underlyingGraph.getVertices();
+        Graph<Node, Edge> influenceNetwork  =   new SparseMultigraph<>();
+        edgeFactory.setLastID(0);
         
+        for(Node node : nodes)
+            influenceNetwork.addVertex(node);
         
         for(Edge edge : edges)
         {
@@ -38,11 +45,12 @@ public class MutualNeighbourModel
                 edgeAtoB.setWeight(influenceAonB);
                 edgeBtoA.setWeight(influenceBonA);
                 
-                underlyingGraph.removeEdge(edge);
-                underlyingGraph.addEdge(edgeAtoB, agentA, agentB, EdgeType.DIRECTED);
-                underlyingGraph.addEdge(edgeBtoA, agentB, agentA, EdgeType.DIRECTED);
+                influenceNetwork.addEdge(edgeAtoB, agentA, agentB, EdgeType.DIRECTED);
+                influenceNetwork.addEdge(edgeBtoA, agentB, agentA, EdgeType.DIRECTED);
             }
         }
+        
+        return influenceNetwork;
     }
     
     public static double computeInfluence(InfluenceAgent influencer, InfluenceAgent target, Graph<Node, Edge> graph)
