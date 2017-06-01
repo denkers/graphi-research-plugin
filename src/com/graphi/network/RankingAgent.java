@@ -94,4 +94,28 @@ public class RankingAgent extends InfluenceAgent
     {
         return !influenceOffers.isEmpty();
     }
+
+    public void setPolicyComparator(Comparator<Node> policyComparator) 
+    {
+        this.policyComparator = policyComparator;
+    }
+
+    public void setInfluenceOffers(PriorityQueue<InfluenceAgent> influenceOffers) 
+    {
+        this.influenceOffers = influenceOffers;
+    }
+    
+    @Override
+    public Node copyGraphObject()
+    {
+        RankingAgent agent   =   new RankingAgent(id, name, policyComparator);
+        agent.setInfluenced(influenced);
+        agent.setAuthentic(authentic);
+        agent.setTreeRootAgent(treeRootAgent);
+        agent.setInfluenceDecisionComparator(influenceDecisionComparator);
+        agent.setPropagationCount(propagationCount);
+        agent.setInfluenceOffers(influenceOffers);
+        
+        return agent;
+    }
 }

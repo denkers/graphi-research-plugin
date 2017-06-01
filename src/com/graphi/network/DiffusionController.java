@@ -126,7 +126,10 @@ public class DiffusionController
     public void runDiffusion()
     {
         while(canDiffuse())
+        {
             pollAgents();
+            recordState();
+        }
     }
     
     public boolean canDiffuse()
@@ -141,13 +144,19 @@ public class DiffusionController
         
         generateNetwork();
         generateSeeds();
+        DataPanel.getInstance().reloadGraphObjects();
+        recordState();
     }
     
     public void generateSeeds()
     {
         GraphData graphData     =   GraphDataManager.getGraphDataInstance();
         seeder.generateSeeds(graphData.getNodes(), graphData.getGraph());
+        seeder.runSeedTransformation();
+        
         Set<Node> seeds         =   seeder.getSeeds();
+        System.out.println("== GENERATE SEEDS ==");
+        System.out.println("Num seeds: " + seeds.size() + " num nodes: " + GraphDataManager.getGraphDataInstance().getGraph().getVertexCount());
         
         for(Node seed : seeds)
             addActiveAgent(seed);
@@ -157,8 +166,12 @@ public class DiffusionController
     {
         GraphData graphData         =   GraphDataManager.getGraphDataInstance();
         NodeFactory nodeFactory     =   graphData.getNodeFactory();
+        EdgeFactory edgeFactory     =   graphData.getEdgeFactory();
         graphData.resetFactoryIDs();
-        Graph<Node, Edge> network   =   networkGenerator.generateNetwork(nodeFactory, new EdgeFactory());
+        Graph<Node, Edge> network   =   networkGenerator.generateNetwork(nodeFactory, edgeFactory);
+        
+        System.out.println("== GENERATE NETWORK ==");
+        System.out.println("Generator name: " + networkGenerator.getGeneratorName());
         
         if(diffusionDecisionType == EIGEN_DECISION_TYPE)
         {
@@ -170,7 +183,12 @@ public class DiffusionController
                 ((InfluenceAgent) node).setInfluenceDecisionComparator(comp);
         }
         
-        MutualNeighbourModel.transformInfluenceNetwork(network);
+        Node testNode   =   network.getVertices().iterator().next();
+        System.out.println("Graph stats before Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
+        System.out.println("Degree before Transform: " + network.degree(testNode));
+      //  MutualNeighbourModel.transformInfluenceNetwork(network);
+        System.out.println("Graph stats after Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
+        System.out.println("Degree after Transform: " + network.degree(testNode));
         graphData.setGraph(network);
         GraphPanel.getInstance().reloadGraph();
     }

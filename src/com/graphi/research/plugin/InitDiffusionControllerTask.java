@@ -37,7 +37,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         //Generator
         MappedProperty genProp =   new MappedProperty();
         genProp.setName("kleinberg");
-        genProp.setParamValue("latSize", "15");
+        genProp.setParamValue("latSize", "10");
         genProp.setParamValue("exp", "2");
         setProperty("Generator", genProp.toString());
         
@@ -49,14 +49,15 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         seedProp.setParamValue("authMode", "false");
         seedProp.setParamValue("authPerc", "1.0");
         seedProp.setParamValue("colourAuth", "false");
-        seedProp.setParamValue("colourInfl", "false");
+        seedProp.setParamValue("colourInfl", "true");
         setProperty("Seeding", seedProp.toString());
         
         //Measure
         MappedProperty measureProp  =   new MappedProperty();
         measureProp.setName("treeMeasure");
+        measureProp.setParamValue("enable", "false");
         measureProp.setParamValue("recordMode", "0");
-        measureProp.setParamValue("popSize", "-1");
+        measureProp.setParamValue("popSize", "0");
         setProperty("Measure", measureProp.toString());
         
         //Policy
@@ -113,7 +114,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         if(agentType == 0)
             diffController.initInfluenceAgentManipulators();
         
-        else if(agentType == 1)
+        else if(agentType == 1 && policy != null)
             policy.initRankingAgentManipulators(diffusionDecisionType);
         
         return diffController;
@@ -164,6 +165,9 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         String measureName          =   measureProp.getName();
         int populationSize          =   measureProp.getIntParamValue("popSize");
         int recordMode              =   measureProp.getIntParamValue("recordMode");
+        boolean enableMeasure       =   measureProp.getBoolParamValue("enable");
+        
+        if(!enableMeasure) return null;
         
         if(measureName.equalsIgnoreCase("treeMeasure"))
             return new TreeMeasure(populationSize, recordMode);

@@ -91,7 +91,7 @@ public class PopulationMeasure extends AbstractMeasure
     
     public void setGlobalPopulationSize()
     {
-        if(populationSize == -1)
+        if(populationSize == 0)
             populationSize  =   GraphDataManager.getGraphDataInstance().getGraph().getVertices().size();
     }
     

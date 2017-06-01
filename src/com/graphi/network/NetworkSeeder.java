@@ -6,6 +6,7 @@
 
 package com.graphi.network;
 
+import com.graphi.display.layout.GraphPanel;
 import com.graphi.graph.Edge;
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
@@ -68,6 +69,12 @@ public class NetworkSeeder
             addRandomNeighbour(nodes, graph, seedSize);
     }
     
+    public void runSeedTransformation()
+    {
+        runSeedInfluenceTransform();
+        runSeedAuthenticityTransform();
+    }
+    
     public void randomNodeMethod(Map<Integer, Node> nodes, int seedSize)
     {
         List<Integer> nodesCopy =   new LinkedList<>(nodes.keySet());
@@ -116,6 +123,9 @@ public class NetworkSeeder
             if(colourInfluence)
                 agentSeed.setFill(generateRandomSeedColour());
         }
+        
+        if(colourInfluence)
+            GraphPanel.getInstance().repaintDisplay();
     }
     
     public void runSeedAuthenticityTransform()
@@ -141,6 +151,8 @@ public class NetworkSeeder
             {
                 for(; i < seedsCopy.size(); i++)
                     seedsCopy.get(i).setFill(AUTH_COLOUR);
+                
+                GraphPanel.getInstance().repaintDisplay();
             }
         }
     }

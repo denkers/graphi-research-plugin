@@ -12,8 +12,11 @@ public class AgentDataModel extends DefaultTableModel
 {
     public AgentDataModel()
     {
+        addColumn("NodeID");
+        addColumn("Name");
         addColumn("Influenced");
         addColumn("Authentic");
         addColumn("Influencer ID");
+        addColumn("Tree Root ID");
     }
 }

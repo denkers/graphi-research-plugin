@@ -44,15 +44,17 @@ public class CompleteGraphGenerator extends AbstractGenerator
         for(int i = 0; i < numNodes; i++)
         {
             Node nextNode   =   nodeFactory.create();
-            
-            if(i > 0)
-            {
-                Collection<Node> vertices   =   graph.getVertices();
-                for(Node vertex : vertices)
-                    graph.addEdge(edgeFactory.create(), nextNode, vertex);
-            }
-            
             graph.addVertex(nextNode);
+        }
+        
+        Collection<Node> vertices   =   graph.getVertices();
+        for(Node currentNode : vertices)
+        {
+            for(Node nextNode : vertices)
+            {
+                if(!currentNode.equals(nextNode))
+                    graph.addEdge(edgeFactory.create(), currentNode, nextNode);
+            }
         }
         
         return graph;

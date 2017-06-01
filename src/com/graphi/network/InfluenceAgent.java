@@ -19,11 +19,11 @@ import java.util.Random;
 
 public class InfluenceAgent extends Node
 {
-    private boolean influenced;
-    private boolean authentic;
-    private InfluenceAgent influencer;
-    private InfluenceAgent treeRootAgent;
-    private Comparator<Node> influenceDecisionComparator;
+    protected boolean influenced;
+    protected boolean authentic;
+    protected InfluenceAgent influencer;
+    protected InfluenceAgent treeRootAgent;
+    protected Comparator<Node> influenceDecisionComparator;
     
     public InfluenceAgent()
     {
@@ -170,6 +170,18 @@ public class InfluenceAgent extends Node
             this.influenceDecisionComparator =   new InfluenceRankComparator(this);
         else
             this.influenceDecisionComparator = influenceDecisionComparator;
+    }
+    
+    @Override
+    public Node copyGraphObject()
+    {
+        InfluenceAgent agent   =   new InfluenceAgent(id, name, fill);
+        agent.setInfluenced(influenced);
+        agent.setAuthentic(authentic);
+        agent.setTreeRootAgent(treeRootAgent);
+        agent.setInfluenceDecisionComparator(influenceDecisionComparator);
+        
+        return agent;
     }
     
     private class InfluencedNeighbourPriorityQueue extends PriorityQueue<Node>

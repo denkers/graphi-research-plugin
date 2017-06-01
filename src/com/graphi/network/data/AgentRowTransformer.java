@@ -18,11 +18,13 @@ public class AgentRowTransformer extends NodeRowListTransformer
     {
         List rowList                =   super.transform(node);
         InfluenceAgent agent        =   (InfluenceAgent) node;
-        Node influencer             =   agent.getInfluencer();   
+        Node influencer             =   agent.getInfluencer(); 
+        Node treeRoot               =   agent.getTreeRootAgent();
         
         rowList.add(agent.isInfluenced());
         rowList.add(agent.isAuthentic());
-        rowList.add(influencer == null? "SEED" : influencer.getID());
+        rowList.add(influencer == null? "None" : influencer.getID());
+        rowList.add(treeRoot == null? "None" : treeRoot.getID());
         
         return rowList;
     }

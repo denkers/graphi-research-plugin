@@ -18,7 +18,6 @@ public class RankingAgentRowTransformer extends AgentRowTransformer
         List rowList        =   super.transform(node);
         RankingAgent agent  =   (RankingAgent) node;
         
-        rowList.add(agent.getTreeRootAgent().getID());
         rowList.add(agent.getPropagationCount());
         
         return rowList;

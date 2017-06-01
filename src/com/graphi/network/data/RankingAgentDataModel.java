@@ -12,7 +12,6 @@ public class RankingAgentDataModel extends AgentDataModel
     {
         super();
         
-        addColumn("Tree Agent ID");
         addColumn("Propagation Count");
     }
 }
