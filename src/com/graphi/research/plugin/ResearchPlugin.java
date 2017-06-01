@@ -38,6 +38,7 @@ public class ResearchPlugin extends AbstractPlugin
     @Override
     public void onPluginActivate() 
     {
+        System.out.println("activate");
         TaskManager taskManager =   TaskManager.getInstance();
         taskManager.registerTask(new InitDiffusionControllerTask());
         taskManager.registerTask(new DiffusionTask());

@@ -49,16 +49,16 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         
         //Measure
         MappedProperty measureProp  =   new MappedProperty();
-        seedProp.setName("treeMeasure");
-        seedProp.setParamValue("recordMode", "0");
-        seedProp.setParamValue("popSize", "-1");
+        measureProp.setName("treeMeasure");
+        measureProp.setParamValue("recordMode", "0");
+        measureProp.setParamValue("popSize", "-1");
         setProperty("Measure", measureProp.toString());
         
         //Policy
         MappedProperty policyProp   =   new MappedProperty();
-        seedProp.setName("PolicyController");
-        seedProp.setParamValue("enable", "false");
-        seedProp.setParamValue("policyMode", "0");
+        policyProp.setName("PolicyController");
+        policyProp.setParamValue("enable", "false");
+        policyProp.setParamValue("policyMode", "0");
         setProperty("Policy", policyProp.toString());
         
         //Diffusion

@@ -21,6 +21,7 @@ public class InfluenceAgent extends Node
     private boolean influenced;
     private boolean authentic;
     private InfluenceAgent influencer;
+    private InfluenceAgent treeRootAgent;
     
     public InfluenceAgent()
     {
@@ -44,6 +45,7 @@ public class InfluenceAgent extends Node
         influenced              =   false;
         authentic               =   true;
         influencer              =   null;
+        treeRootAgent           =   null;
     }
 
     public int getInfluencedTreeDepth()
@@ -111,6 +113,7 @@ public class InfluenceAgent extends Node
         target.setInfluencer(this);
         target.setAuthentic(authentic);
         target.setFill(fill);
+        target.setTreeRootAgent(getTreeRootAgent());
     }
     
     public boolean isInfluenced() 
@@ -141,6 +144,16 @@ public class InfluenceAgent extends Node
     public void setInfluencer(InfluenceAgent influencer)
     {
         this.influencer =   influencer;
+    }
+    
+    public InfluenceAgent getTreeRootAgent() 
+    {
+        return treeRootAgent == null? this : treeRootAgent;
+    }
+
+    public void setTreeRootAgent(InfluenceAgent treeRootAgent) 
+    {
+        this.treeRootAgent = treeRootAgent;
     }
     
     private class InfluencedNeighbourPriorityQueue extends PriorityQueue<Node>

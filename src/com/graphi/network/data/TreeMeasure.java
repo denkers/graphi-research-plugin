@@ -7,6 +7,7 @@
 package com.graphi.network.data;
 
 import com.graphi.graph.Node;
+import com.graphi.network.InfluenceAgent;
 import com.graphi.network.RankingAgent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,11 +44,11 @@ public class TreeMeasure extends AbstractMeasure
     {
         if(node != null)
         {
-            RankingAgent agent  =   (RankingAgent) node;
+            InfluenceAgent agent  =   (InfluenceAgent) node;
             
             if(isTreeHeightMode())
             {
-                RankingAgent treeSource =   agent.getTreeRootAgent();
+                InfluenceAgent treeSource =   agent.getTreeRootAgent();
                 
                 if(!maxTreeHeights.containsKey(treeSource))
                     maxTreeHeights.put(treeSource, 0);
@@ -66,8 +67,8 @@ public class TreeMeasure extends AbstractMeasure
             
             if(isTreeSizeMode())
             {
-                RankingAgent treeSource =   agent.getTreeRootAgent();
-                int treeSize            =   treeSizes.containsKey(treeSource)? (treeSizes.get(treeSource) + 1) : 1;
+                InfluenceAgent treeSource   =   agent.getTreeRootAgent();
+                int treeSize                =   treeSizes.containsKey(treeSource)? (treeSizes.get(treeSource) + 1) : 1;
                 treeSizes.put(treeSource, treeSize);
                 
                 if(maxTreeSizeNode == null || (treeSize > treeSizes.get(maxTreeSizeNode)))
@@ -121,10 +122,10 @@ public class TreeMeasure extends AbstractMeasure
         
         for(int i = 0; it.hasNext(); i++)
         {
-            List rowList            =   new ArrayList();
-            RankingAgent nextAgent  =   (RankingAgent) it.next();
-            int ID                  =   nextAgent.getID();
-            boolean authentic       =   nextAgent.isAuthentic();
+            List rowList                =   new ArrayList();
+            InfluenceAgent nextAgent    =   (InfluenceAgent) it.next();
+            int ID                      =   nextAgent.getID();
+            boolean authentic           =   nextAgent.isAuthentic();
             
             rowList.add(ID);
             rowList.add(authentic);
@@ -158,72 +159,6 @@ public class TreeMeasure extends AbstractMeasure
         
         return model;
     }
-    
-    /*public DefaultTableModel getTreeSizeModel()
-    {
-        DefaultTableModel model =   new DefaultTableModel();
-        model.addColumn("Tree Source ID");
-        model.addColumn("Authentic Tree");
-        model.addColumn("Tree Size");
-        model.addColumn("Max Tree Size");
-        model.addColumn("Average Tree Size");
-        
-        int maxTreeSize     =   getMaxTreeSize();
-        double average      =   getAverage(false);
-        Set<Node> treeNodes =   treeSizes.keySet();
-        Iterator<Node> it   =   treeNodes.iterator();
-        
-        for(int i = 0; it.hasNext(); i++)
-        {
-            RankingAgent nextAgent  =   (RankingAgent) it.next();
-            int ID                  =   nextAgent.getID();
-            boolean authentic       =   nextAgent.isAuthentic();
-            int treeSize            =   treeSizes.get(nextAgent);
-            
-            if(i > 0)
-            {
-                maxTreeSize     =   0;
-                average         =   0;
-            }
-            
-            model.addRow(new Object[] {ID, authentic, treeSize, maxTreeSize, average});
-        }
-        
-        return model;
-    }
-    
-    public DefaultTableModel getTreeHeightModel()
-    {
-        DefaultTableModel model =   new DefaultTableModel();
-        model.addColumn("Tree Source ID");
-        model.addColumn("Authentic Tree");
-        model.addColumn("Tree Height");
-        model.addColumn("Max Tree Height");
-        model.addColumn("Average Tree Height");
-        
-        int maxTreeHeight   =   getMaxTreeHeight();
-        double average      =   getAverage(true);
-        Set<Node> treeNodes =   maxTreeHeights.keySet();
-        Iterator<Node> it   =   treeNodes.iterator();
-        
-        for(int i = 0; it.hasNext(); i++)
-        {
-            RankingAgent nextAgent  =   (RankingAgent) it.next();
-            int ID                  =   nextAgent.getID();
-            boolean authentic       =   nextAgent.isAuthentic();
-            int treeHeight          =   maxTreeHeights.get(nextAgent);
-            
-            if(i > 0)
-            {
-                maxTreeHeight   =   0;
-                average         =   0;
-            }
-            
-            model.addRow(new Object[] {ID, authentic, treeHeight, maxTreeHeight, average});
-        }
-        
-        return model;
-    } */
     
     public int getMaxTreeHeight()
     {

@@ -9,6 +9,7 @@ package com.graphi.network.rank;
 import com.graphi.display.layout.DataPanel;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.InfluenceAgent;
 import com.graphi.network.RankingAgent;
 import com.graphi.network.RankingAgentFactory;
 import com.graphi.network.data.RankingAgentDataModel;
@@ -48,7 +49,7 @@ public class PolicyController
             {
                 if(policyMode == TRENDING_TREE_MODE)
                 {
-                    RankingAgent influencerTreeRoot   =   optimalInfluencer.getTreeRootAgent();
+                    InfluenceAgent influencerTreeRoot   =   optimalInfluencer.getTreeRootAgent();
                     if(treeScores.containsKey(influencerTreeRoot))
                         treeScores.put(influencerTreeRoot, treeScores.get(influencerTreeRoot) + 1);
                     else

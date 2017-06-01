@@ -14,7 +14,6 @@ import java.util.PriorityQueue;
 
 public class RankingAgent extends InfluenceAgent
 {
-    private RankingAgent treeRootAgent;
     private int propagationCount;
     private Comparator<Node> policyComparator;
     private PriorityQueue<InfluenceAgent> influenceOffers;
@@ -39,7 +38,6 @@ public class RankingAgent extends InfluenceAgent
         super(id, name, fill);
         
         propagationCount        =   0;
-        treeRootAgent           =   null;
         this.policyComparator   =   policyComparator;
         influenceOffers         =   new PriorityQueue<>(policyComparator);   
     }
@@ -60,8 +58,6 @@ public class RankingAgent extends InfluenceAgent
         super.influenceAgent(target);
         
         propagationCount++;
-        RankingAgent rankingTarget  =   (RankingAgent) target;
-        rankingTarget.setTreeRootAgent(getTreeRootAgent());
     }
     
     public void addInfluenceOffer(RankingAgent influenceAgent)
@@ -69,16 +65,6 @@ public class RankingAgent extends InfluenceAgent
         influenceAgent.addInfluenceOffer(this);
     }
     
-    public RankingAgent getTreeRootAgent() 
-    {
-        return treeRootAgent == null? this : treeRootAgent;
-    }
-
-    public void setTreeRootAgent(RankingAgent treeRootAgent) 
-    {
-        this.treeRootAgent = treeRootAgent;
-    }
-
     public int getPropagationCount() 
     {
         return propagationCount;
