@@ -11,6 +11,11 @@ import com.graphi.network.NetworkSeeder;
 import com.graphi.network.data.AbstractMeasure;
 import com.graphi.network.data.PopulationMeasure;
 import com.graphi.network.data.TreeMeasure;
+import com.graphi.network.generator.CompleteGraphGenerator;
+import com.graphi.network.generator.CycleGraphGenerator;
+import com.graphi.network.generator.LineGraphGenerator;
+import com.graphi.network.generator.StarGraphGenerator;
+import com.graphi.network.generator.WheelGraphGenerator;
 import com.graphi.network.rank.PolicyController;
 import com.graphi.plugins.PluginManager;
 import com.graphi.sim.generator.NetworkGenerator;
@@ -121,7 +126,26 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
             case "berbasi": gen     =   getBASim(genProp); break;
             case "kleinberg": gen   =   getKleinbergSim(genProp); break;
             case "random": gen      =   getRASim(genProp); break;
-            default: gen = null;
+            default: gen            =   getClassicGenerator(genProp);
+        }
+        
+        return gen;
+    }
+    
+    public NetworkGenerator getClassicGenerator(MappedProperty prop)
+    {
+        String genName      =   prop.getName();
+        int numNodes        =   prop.getIntParamValue("numNodes");
+        NetworkGenerator gen;
+        
+        switch(genName)
+        {
+            case "complete": gen    =   new CompleteGraphGenerator(numNodes); break;
+            case "cycle": gen       =   new CycleGraphGenerator(numNodes); break;
+            case "line": gen        =   new LineGraphGenerator(numNodes); break;
+            case "star": gen        =   new StarGraphGenerator(numNodes); break;
+            case "wheel": gen       =   new WheelGraphGenerator(numNodes); break;
+            default: gen            =   null;
         }
         
         return gen;
