@@ -35,8 +35,8 @@ public class InfluenceRankComparator implements Comparator<Node>
         
         if(edgeA != null && edgeB != null)
         {
-            double scoreA  =   getConnectionScore(edgeA.getWeight(), graph.degree(nodeA));
-            double scoreB  =   getConnectionScore(edgeB.getWeight(), graph.degree(nodeB));
+            double scoreA  =   getConnectionScore(edgeA.getWeight(), graph.inDegree(nodeA));
+            double scoreB  =   getConnectionScore(edgeB.getWeight(), graph.inDegree(nodeB));
             
             if(scoreA > scoreB) return -1;
             else if(scoreA < scoreB) return 1;

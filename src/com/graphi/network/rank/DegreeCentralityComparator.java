@@ -18,8 +18,8 @@ public class DegreeCentralityComparator implements Comparator<Node>
     public int compare(Node nodeA, Node nodeB)
     {
         Graph<Node, Edge> graph =   GraphDataManager.getGraphDataInstance().getGraph();
-        int degreeA             =   graph.degree(nodeA);
-        int degreeB             =   graph.degree(nodeB);
+        int degreeA             =   graph.inDegree(nodeA);
+        int degreeB             =   graph.inDegree(nodeB);
         
         if(degreeA > degreeB) return -1;
         else if(degreeA < degreeB) return 1;
