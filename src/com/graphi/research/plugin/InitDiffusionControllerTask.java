@@ -72,6 +72,8 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         diffusionProp.setParamValue("diffusionMode", "0");
         diffusionProp.setParamValue("maxUnits", "10");
         diffusionProp.setParamValue("agentType", "0");
+        diffusionProp.setParamValue("diffusionDecisionType", "0");
+        diffusionProp.setParamValue("enableMN", "true");
         setProperty("Diffusion", diffusionProp.toString());
     }
 
@@ -93,6 +95,8 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         int diffusionMode           =   diffusionProp.getIntParamValue("diffusionMode");
         int maxUnits                =   diffusionProp.getIntParamValue("maxUnits");
         int agentType               =   diffusionProp.getIntParamValue("agentType");
+        int diffusionDecisionType   =   diffusionProp.getIntParamValue("diffusionDecisionType");
+        boolean enableMN            =   diffusionProp.getBoolParamValue("enableMN");
         
         NetworkGenerator generator  =   getGenerator();
         PolicyController policy     =   getPolicy();
@@ -103,12 +107,14 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         diffController.setPolicyController(policy);
         diffController.setMeasure(measure);
         diffController.setMaxUnits(maxUnits);
+        diffController.setEnableMN(enableMN);
+        diffController.setDiffusionDecisionType(diffusionDecisionType);
         
         if(agentType == 0)
             diffController.initInfluenceAgentManipulators();
         
         else if(agentType == 1)
-            policy.initRankingAgentManipulators();
+            policy.initRankingAgentManipulators(diffusionDecisionType);
         
         return diffController;
     }

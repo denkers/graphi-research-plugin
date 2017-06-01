@@ -13,6 +13,7 @@ import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.awt.Color;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -22,6 +23,7 @@ public class InfluenceAgent extends Node
     private boolean authentic;
     private InfluenceAgent influencer;
     private InfluenceAgent treeRootAgent;
+    private Comparator<Node> influenceDecisionComparator;
     
     public InfluenceAgent()
     {
@@ -42,10 +44,11 @@ public class InfluenceAgent extends Node
     {
         super(id, name, fill);
         
-        influenced              =   false;
-        authentic               =   true;
-        influencer              =   null;
-        treeRootAgent           =   null;
+        influenced                  =   false;
+        authentic                   =   true;
+        influencer                  =   null;
+        treeRootAgent               =   null;
+        influenceDecisionComparator =   new InfluenceRankComparator(this);
     }
 
     public int getInfluencedTreeDepth()
@@ -155,12 +158,25 @@ public class InfluenceAgent extends Node
     {
         this.treeRootAgent = treeRootAgent;
     }
+
+    public Comparator<Node> getInfluenceDecisionComparator() 
+    {
+        return influenceDecisionComparator;
+    }
+
+    public void setInfluenceDecisionComparator(Comparator<Node> influenceDecisionComparator)
+    {
+        if(influenceDecisionComparator == null)
+            this.influenceDecisionComparator =   new InfluenceRankComparator(this);
+        else
+            this.influenceDecisionComparator = influenceDecisionComparator;
+    }
     
     private class InfluencedNeighbourPriorityQueue extends PriorityQueue<Node>
     {
         public InfluencedNeighbourPriorityQueue(int initialCapacity)
         {
-            super(initialCapacity, new InfluenceRankComparator(InfluenceAgent.this));
+            super(initialCapacity, influenceDecisionComparator);
         }
         
         @Override

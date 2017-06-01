@@ -9,6 +9,7 @@ package com.graphi.network.rank;
 import com.graphi.display.layout.DataPanel;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
+import com.graphi.network.DiffusionController;
 import com.graphi.network.InfluenceAgent;
 import com.graphi.network.RankingAgent;
 import com.graphi.network.RankingAgentFactory;
@@ -66,13 +67,20 @@ public class PolicyController
         return adoptedAgents;
     }
     
-    public void initRankingAgentManipulators()
+    public void initRankingAgentManipulators(int diffusionDecisionType)
     {
         Comparator<Node> comparator             =   policyMode == TRENDING_TREE_MODE? new TrendingTreeComparator(this) : new TrendingSourceComparator();
-        RankingAgentFactory factory             =   new RankingAgentFactory(comparator);
         RankingAgentDataModel agentModel        =   new RankingAgentDataModel();   
         RankingAgentRowTransformer transformer  =   new RankingAgentRowTransformer();
         DataPanel dataPanel                     =   DataPanel.getInstance();
+        
+        RankingAgentFactory factory             =   new RankingAgentFactory(comparator);
+        
+        if(diffusionDecisionType == DiffusionController.STANDARD_DECISION_TYPE)
+            factory.setInfluenceComparator(null);
+        
+        else if(diffusionDecisionType == DiffusionController.DEGREE_DECISION_TYPE)
+            factory.setInfluenceComparator(new DegreeCentralityComparator());
         
         GraphDataManager.getGraphDataInstance().setNodeFactory(factory);
         dataPanel.setVertexDataModel(agentModel);

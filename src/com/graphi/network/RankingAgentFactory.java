@@ -7,10 +7,9 @@
 package com.graphi.network;
 
 import com.graphi.graph.Node;
-import com.graphi.util.factory.NodeFactory;
 import java.util.Comparator;
 
-public class RankingAgentFactory extends NodeFactory
+public class RankingAgentFactory extends InfluenceAgentFactory
 {
     private Comparator<Node> policyComparator;
     
@@ -36,6 +35,7 @@ public class RankingAgentFactory extends NodeFactory
     {
         lastID                      +=  incAmount;
         RankingAgent rankingAgent   =    new RankingAgent(lastID, Integer.toHexString(lastID), policyComparator); 
+        rankingAgent.setInfluenceDecisionComparator(influenceComparator);
         return rankingAgent;
     }
 

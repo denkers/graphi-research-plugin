@@ -8,9 +8,12 @@ package com.graphi.network;
 
 import com.graphi.graph.Node;
 import com.graphi.util.factory.NodeFactory;
+import java.util.Comparator;
 
 public class InfluenceAgentFactory extends NodeFactory
 {
+    protected Comparator<Node> influenceComparator;
+    
     public InfluenceAgentFactory()
     {
         super();
@@ -26,10 +29,23 @@ public class InfluenceAgentFactory extends NodeFactory
         super(lastID, incAmount);
     }
 
+    public Comparator<Node> getInfluenceComparator()
+    {
+        return influenceComparator;
+    }
+
+    public void setInfluenceComparator(Comparator<Node> influenceComparator) 
+    {
+        this.influenceComparator = influenceComparator;
+    }
+    
     @Override
     public Node create()
     {
         lastID  +=  incAmount;
-        return new InfluenceAgent(lastID, Integer.toHexString(lastID)); 
+        InfluenceAgent agent    =    new InfluenceAgent(lastID, Integer.toHexString(lastID)); 
+        agent.setInfluenceDecisionComparator(influenceComparator);
+        
+        return agent;
     }
 }

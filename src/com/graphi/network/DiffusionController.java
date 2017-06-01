@@ -16,10 +16,15 @@ import com.graphi.graph.Node;
 import com.graphi.network.data.AbstractMeasure;
 import com.graphi.network.data.AgentDataModel;
 import com.graphi.network.data.AgentRowTransformer;
+import com.graphi.network.rank.DegreeCentralityComparator;
+import com.graphi.network.rank.EigenvectorCentralityComparator;
 import com.graphi.network.rank.PolicyController;
 import com.graphi.sim.generator.NetworkGenerator;
 import com.graphi.util.factory.EdgeFactory;
+import com.graphi.util.factory.NodeFactory;
+import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
 import edu.uci.ics.jung.graph.Graph;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +32,15 @@ import javax.swing.table.DefaultTableModel;
 
 public class DiffusionController 
 {
-    public static final int STANDARD_MODE       =   0;
-    public static final int POLICY_MODE         =   1;
-    public static final int STANDARD_AUTH_MODE  =   2;
-    public static final int POLICY_AUTH_MODE    =   3;
-    public static final int DEFAULT_MAX_UNITS   =   10;
+    public static final int STANDARD_MODE           =   0;
+    public static final int POLICY_MODE             =   1;
+    public static final int STANDARD_AUTH_MODE      =   2;
+    public static final int POLICY_AUTH_MODE        =   3;
+    public static final int DEFAULT_MAX_UNITS       =   10;
+    
+    public static final int STANDARD_DECISION_TYPE  =   0;
+    public static final int DEGREE_DECISION_TYPE    =   1;
+    public static final int EIGEN_DECISION_TYPE     =   2;
     
     private Set<Node> activeAgents;
     private NetworkSeeder seeder;
@@ -41,6 +50,8 @@ public class DiffusionController
     private int timeUnit;
     private int maxUnits;
     private int diffusionMode;
+    private boolean enableMN;
+    private int diffusionDecisionType;
     
     public DiffusionController()
     {
@@ -65,6 +76,8 @@ public class DiffusionController
         timeUnit                =   0;
         maxUnits                =   DEFAULT_MAX_UNITS;
         activeAgents            =   new HashSet<>();
+        enableMN                =   true;
+        diffusionDecisionType   =   STANDARD_DECISION_TYPE;
     }
     
     public void pollAgents()
@@ -80,7 +93,7 @@ public class DiffusionController
             else
             {
                 InfluenceAgent neighbourAgent   =   (InfluenceAgent) optimalNeighbour;   
-                boolean influenceSuccess        =   agent.tryInfluenceAgent(neighbourAgent);
+                boolean influenceSuccess        =   !enableMN? true : agent.tryInfluenceAgent(neighbourAgent);
                 
                 if(influenceSuccess) 
                 {
@@ -142,11 +155,22 @@ public class DiffusionController
     
     public void generateNetwork()
     {
-        Graph<Node, Edge> network   =   networkGenerator.generateNetwork(new InfluenceAgentFactory(), new EdgeFactory());
-        MutualNeighbourModel.transformInfluenceNetwork(network);
-
         GraphData graphData         =   GraphDataManager.getGraphDataInstance();
+        NodeFactory nodeFactory     =   graphData.getNodeFactory();
         graphData.resetFactoryIDs();
+        Graph<Node, Edge> network   =   networkGenerator.generateNetwork(nodeFactory, new EdgeFactory());
+        
+        if(diffusionDecisionType == EIGEN_DECISION_TYPE)
+        {
+            EigenvectorCentrality centrality        =   new EigenvectorCentrality(network);
+            EigenvectorCentralityComparator comp    =   new EigenvectorCentralityComparator(centrality); 
+            Collection<Node> nodes                  =   network.getVertices();
+            
+            for(Node node : nodes)
+                ((InfluenceAgent) node).setInfluenceDecisionComparator(comp);
+        }
+        
+        MutualNeighbourModel.transformInfluenceNetwork(network);
         graphData.setGraph(network);
         GraphPanel.getInstance().reloadGraph();
     }
@@ -177,8 +201,16 @@ public class DiffusionController
         AgentDataModel model            =   new AgentDataModel();
         AgentRowTransformer transformer =   new AgentRowTransformer();   
         DataPanel dataPanel             =   DataPanel.getInstance();
+        InfluenceAgentFactory factory   =   new InfluenceAgentFactory();
         
-        GraphDataManager.getGraphDataInstance().setNodeFactory(new InfluenceAgentFactory());
+        if(diffusionDecisionType == STANDARD_DECISION_TYPE)
+            factory.setInfluenceComparator(null);
+        
+        else if(diffusionDecisionType == DEGREE_DECISION_TYPE)
+            factory.setInfluenceComparator(new DegreeCentralityComparator());
+        
+            
+        GraphDataManager.getGraphDataInstance().setNodeFactory(factory);
         dataPanel.setVertexDataModel(model);
         dataPanel.setNodeRowListTransformer(transformer);
     }
@@ -262,5 +294,26 @@ public class DiffusionController
     {
         return measure != null;
     }
+
+    public boolean isEnableMN() {
+        return enableMN;
+    }
+
+    public void setEnableMN(boolean enableMN)
+    {
+        this.enableMN = enableMN;
+    }
+
+    public int getDiffusionDecisionType() 
+    {
+        return diffusionDecisionType;
+    }
+
+    public void setDiffusionDecisionType(int diffusionDecisionType)
+    {
+        this.diffusionDecisionType = diffusionDecisionType;
+    }
+    
+    
 }
     
