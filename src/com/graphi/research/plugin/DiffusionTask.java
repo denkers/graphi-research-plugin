@@ -22,7 +22,7 @@ public class DiffusionTask extends AbstractTask
     @Override
     public void initDefaultProperties()
     {
-        setProperty("runAutomatic", "false");
+        setProperty("runAutomatic", "true");
     }
 
     @Override

@@ -57,26 +57,6 @@ public class InfluenceAgent extends Node
         else return influencer.getInfluencedTreeDepth() + 1;
     }
     
-    public int getInfluencedTreeHeight(Graph<Node, Edge> graph)
-    {
-        Collection<Node> neighbours =   graph.getNeighbors(this);
-        int maxHeight               =   0;
-        
-        if(neighbours.isEmpty()) return 0;
-        
-        for(Node neighbour : neighbours)
-        {
-            InfluenceAgent agentNeighbour   =   (InfluenceAgent) neighbour;
-            if(agentNeighbour.isInfluenced() && agentNeighbour.getInfluencer().equals(this)) 
-            {
-                int neighbourHeight     =   agentNeighbour.getInfluencedTreeHeight(graph);
-                if(neighbourHeight > maxHeight) maxHeight   =   neighbourHeight;
-            }
-        }
-        
-        return maxHeight + 1;
-    }
-    
     public boolean tryInfluenceAgent(InfluenceAgent target)
     {
         Graph<Node, Edge> network   =   GraphDataManager.getGraphDataInstance().getGraph();

@@ -8,8 +8,8 @@ package com.graphi.network.data;
 
 import com.graphi.graph.Node;
 import com.graphi.network.InfluenceAgent;
-import com.graphi.network.RankingAgent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +31,17 @@ public class TreeMeasure extends AbstractMeasure
         this(0, RECORD_TREE_SIZE);
     }
     
+    public TreeMeasure(int recordMode)
+    {
+        this(0, recordMode);
+    }
+    
     public TreeMeasure(int populationSize, int recordMode)
     {
         this.populationSize     =   populationSize;
         this.recordMode         =   recordMode;
+        treeSizes               =   new HashMap<>();
+        maxTreeHeights          =   new HashMap<>();
         maxTreeSizeNode         =   null;
         maxTreeHeightNode       =   null;
     }
@@ -55,7 +62,7 @@ public class TreeMeasure extends AbstractMeasure
                 
                 else
                 {
-                    int depth               =   agent.getInfluencedTreeDepth();
+                    int depth   =   agent.getInfluencedTreeDepth();
                     
                     if(maxTreeHeights.get(treeSource) < depth)
                         maxTreeHeights.put(treeSource, depth);

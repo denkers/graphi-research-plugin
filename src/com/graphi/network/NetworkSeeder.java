@@ -60,7 +60,10 @@ public class NetworkSeeder
         int seedSize    =   (int) (nodes.size() * seedPercent);
         
         if(seedMethod == RANDOM_FRIEND_SEED) 
+        {
             seedSize     =   seedSize / 2;
+            System.out.println("RANDOM FRIEND SIZE: " + seedSize);
+        }
         
         if(seedMethod == RANDOM_NODE_SEED)
             randomNodeMethod(nodes, seedSize);

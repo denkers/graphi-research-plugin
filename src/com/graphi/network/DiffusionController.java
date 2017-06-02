@@ -36,9 +36,7 @@ public class DiffusionController
 {
     public static final int STANDARD_MODE           =   0;
     public static final int POLICY_MODE             =   1;
-    public static final int STANDARD_AUTH_MODE      =   2;
-    public static final int POLICY_AUTH_MODE        =   3;
-    public static final int DEFAULT_MAX_UNITS       =   10;
+    public static final int DEFAULT_MAX_UNITS       =   100;
     
     public static final int STANDARD_DECISION_TYPE  =   0;
     public static final int DEGREE_DECISION_TYPE    =   1;
@@ -124,6 +122,7 @@ public class DiffusionController
                 addActiveAgent(agent);
         }
         
+        recordMeasure();
         DataPanel.getInstance().reloadGraphObjects();
         GraphPanel.getInstance().repaintDisplay();
     }
@@ -134,13 +133,20 @@ public class DiffusionController
         while(canDiffuse())
         {
             pollAgents();
-        //    recordState();
+            
+            if(!activeAgents.isEmpty())
+            {
+                recordMeasure();
+                recordState();
+            }
         }
+        
+        System.out.println("DIFFUSION UNITS: " + timeUnit);
     }
     
     public boolean canDiffuse()
     {
-        return !activeAgents.isEmpty() && timeUnit < maxUnits;
+        return !activeAgents.isEmpty() && timeUnit <= maxUnits;
     }
     
     public void initDiffusion()
@@ -151,7 +157,7 @@ public class DiffusionController
         generateNetwork();
         generateSeeds();
         DataPanel.getInstance().reloadGraphObjects();
-    //    recordState();
+        recordState();
     }
     
     public void generateSeeds()
@@ -161,11 +167,11 @@ public class DiffusionController
         seeder.runSeedTransformation();
         
         Set<Node> seeds         =   seeder.getSeeds();
-        System.out.println("== GENERATE SEEDS ==");
-        System.out.println("Num seeds: " + seeds.size() + " num nodes: " + GraphDataManager.getGraphDataInstance().getGraph().getVertexCount());
         
         for(Node seed : seeds)
             addActiveAgent(seed);
+        
+        recordMeasure();
     }
     
     public void generateNetwork()
@@ -189,28 +195,25 @@ public class DiffusionController
                 ((InfluenceAgent) node).setInfluenceDecisionComparator(comp);
         }
         
-        
-        
-        Node testNode   =   network.getVertices().iterator().next();
-        System.out.println("Graph stats before Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
-        System.out.println("id= " + testNode.getID()  + " Degree before Transform: " + network.degree(testNode));
         network =   MutualNeighbourModel.transformInfluenceNetwork(network, edgeFactory);
-        System.out.println("Graph stats after Transform: (Nodes=" + network.getVertexCount() + ") (Edges=" + network.getEdgeCount() + ")");
-        System.out.println("id= " + testNode.getID() + " Degree after Transform: " + network.degree(testNode));
         graphData.setGraph(network);
         GraphPanel.getInstance().reloadGraph();
+    }
+    
+    public void recordMeasure()
+    {
+        if(measure != null)
+        {
+            DefaultTableModel model     =   measure.getMeasureModel();
+            String name                 =   "Measure for time unit (" + timeUnit + ")";
+            AbstractMeasure.setComputationModel(model, name);
+        }
     }
     
     public void recordState()
     {
         PlaybackControlPanel pbPanel    =   GraphPanel.getInstance().getPlaybackPanel();
         String name                     =   "Time Unit (" + timeUnit + ")";
-        
-        if(measure != null)
-        {
-            DefaultTableModel model     =   measure.getMeasureModel();
-            AbstractMeasure.setComputationModel(model, name);
-        }
         
         pbPanel.addRecordedGraph(name, new Date(), true, true, true);
         timeUnit++;
@@ -288,12 +291,12 @@ public class DiffusionController
     
     public boolean isInfluenceMode()
     {
-        return diffusionMode == STANDARD_MODE || diffusionMode == STANDARD_AUTH_MODE;
+        return diffusionMode == STANDARD_MODE;
     }
     
     public boolean isPolicyMode()
     {
-        return diffusionMode == POLICY_MODE || diffusionMode == POLICY_AUTH_MODE;
+        return diffusionMode == POLICY_MODE;
     }
 
     public int getMaxUnits()

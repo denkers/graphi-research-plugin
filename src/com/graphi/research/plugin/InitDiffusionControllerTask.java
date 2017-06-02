@@ -9,6 +9,7 @@ package com.graphi.research.plugin;
 import com.graphi.network.DiffusionController;
 import com.graphi.network.NetworkSeeder;
 import com.graphi.network.data.AbstractMeasure;
+import com.graphi.network.data.MixedMeasure;
 import com.graphi.network.data.PopulationMeasure;
 import com.graphi.network.data.TreeMeasure;
 import com.graphi.network.generator.CompleteGraphGenerator;
@@ -46,17 +47,17 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         seedProp.setName("networkSeeder");
         seedProp.setParamValue("method", "0");
         seedProp.setParamValue("seedPerc", "0.1");
-        seedProp.setParamValue("authMode", "false");
-        seedProp.setParamValue("authPerc", "1.0");
-        seedProp.setParamValue("colourAuth", "false");
-        seedProp.setParamValue("colourInfl", "true");
+        seedProp.setParamValue("authMode", "true");
+        seedProp.setParamValue("authPerc", "0.7");
+        seedProp.setParamValue("colourAuth", "true");
+        seedProp.setParamValue("colourInfl", "false");
         setProperty("Seeding", seedProp.toString());
         
         //Measure
         MappedProperty measureProp  =   new MappedProperty();
-        measureProp.setName("treeMeasure");
-        measureProp.setParamValue("enable", "false");
-        measureProp.setParamValue("recordMode", "0");
+        measureProp.setName("mixedMeasure");
+        measureProp.setParamValue("enable", "true");
+        measureProp.setParamValue("recordMode", "2");
         measureProp.setParamValue("popSize", "0");
         setProperty("Measure", measureProp.toString());
         
@@ -71,7 +72,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         MappedProperty diffusionProp    =   new MappedProperty();
         diffusionProp.setName("DiffusionController");
         diffusionProp.setParamValue("diffusionMode", "0");
-        diffusionProp.setParamValue("maxUnits", "10");
+        diffusionProp.setParamValue("maxUnits", "100");
         diffusionProp.setParamValue("agentType", "0");
         diffusionProp.setParamValue("diffusionDecisionType", "0");
         diffusionProp.setParamValue("enableMN", "true");
@@ -174,6 +175,9 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         
         else if(measureName.equalsIgnoreCase("populationMeasure"))
             return new PopulationMeasure(populationSize, recordMode);
+        
+        else if(measureName.equalsIgnoreCase("mixedMeasure"))
+            return new MixedMeasure();
         
         else return null;
     }

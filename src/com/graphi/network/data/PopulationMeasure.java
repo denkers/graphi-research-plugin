@@ -26,12 +26,12 @@ public class PopulationMeasure extends AbstractMeasure
     
     public PopulationMeasure()
     {
-        this(-1, 0);
+        this(0, 0);
     }
     
     public PopulationMeasure(int recordMode)
     {
-        this(-1, recordMode);
+        this(0, recordMode);
     }
     
     public PopulationMeasure(int populationSize, int recordMode)
@@ -91,7 +91,7 @@ public class PopulationMeasure extends AbstractMeasure
     
     public void setGlobalPopulationSize()
     {
-        if(populationSize == 0)
+        if(populationSize <= 0)
             populationSize  =   GraphDataManager.getGraphDataInstance().getGraph().getVertices().size();
     }
     

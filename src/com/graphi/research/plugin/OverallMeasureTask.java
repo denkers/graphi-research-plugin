@@ -26,7 +26,7 @@ public class OverallMeasureTask extends AbstractTask
     @Override
     public void initDefaultProperties() 
     {
-        setProperty("populationMeasure", "true");
+        setProperty("populationMeasure", "false");
     }
 
     @Override

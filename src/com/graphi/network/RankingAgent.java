@@ -62,7 +62,7 @@ public class RankingAgent extends InfluenceAgent
     
     public void addInfluenceOffer(RankingAgent influenceAgent)
     {
-        influenceAgent.addInfluenceOffer(this);
+        influenceAgent.getInfluenceOffers().add(this);
     }
     
     public int getPropagationCount() 

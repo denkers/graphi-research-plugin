@@ -6,7 +6,6 @@
 
 package com.graphi.network.data;
 
-import com.graphi.display.layout.DataPanel;
 import com.graphi.display.layout.GraphPanel;
 import com.graphi.sim.PlaybackEntry;
 import java.util.ArrayList;
@@ -128,7 +127,7 @@ public class OverallMeasureComputation
         return model;
     }
     
-    private static double getChangeRate(DefaultTableModel currentModel, DefaultTableModel prevModel, int row, int col, double currentValue)
+    public static double getChangeRate(DefaultTableModel currentModel, DefaultTableModel prevModel, int row, int col, double currentValue)
     {
         if(prevModel == null || currentModel == null) return 0.0;
         
@@ -138,7 +137,7 @@ public class OverallMeasureComputation
         return change;
     }
     
-    private static double getColumnAverage(DefaultTableModel model, int col, int numValues)
+    public static double getColumnAverage(DefaultTableModel model, int col, int numValues)
     {
         int numRows     =   model.getRowCount();
         double total    =   0;
@@ -152,7 +151,7 @@ public class OverallMeasureComputation
         return (double) total / (double) numValues;
     }
     
-    private static List<PlaybackEntry> getEntries()
+    public static List<PlaybackEntry> getEntries()
     {
         return GraphPanel.getInstance().getPlaybackPanel().getGraphPlayback().getEntries();
     }
