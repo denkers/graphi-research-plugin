@@ -8,6 +8,7 @@ package com.graphi.research.plugin;
 
 import com.graphi.network.DiffusionController;
 import com.graphi.network.data.AbstractMeasure;
+import com.graphi.network.data.MixedOverallMeasure;
 import com.graphi.network.data.OverallMeasureComputation;
 import com.graphi.network.data.PopulationMeasure;
 import com.graphi.network.data.TreeMeasure;
@@ -26,7 +27,7 @@ public class OverallMeasureTask extends AbstractTask
     @Override
     public void initDefaultProperties() 
     {
-        setProperty("populationMeasure", "false");
+        setProperty("overallMeasureType", "2");
     }
 
     @Override
@@ -34,7 +35,7 @@ public class OverallMeasureTask extends AbstractTask
     {
         ResearchPlugin plugin                       =   (ResearchPlugin) PluginManager.getInstance().getActivePlugin();
         DiffusionController diffusionController     =   plugin.getDiffusionController();
-        boolean isPopulationMeasure                 =   getProperty("populationMeasure").equalsIgnoreCase("true");
+        int overallMeasureType                      =   Integer.parseInt(getProperty("overallMeasureType"));
         AbstractMeasure measure                     =   diffusionController.getMeasure();
         
         if(measure != null)
@@ -42,16 +43,24 @@ public class OverallMeasureTask extends AbstractTask
             DefaultTableModel model;
             String context;
             
-            if(isPopulationMeasure)
+            switch (overallMeasureType)
             {
-                model   =   OverallMeasureComputation.getOverallPopulationModel((PopulationMeasure) measure);
-                context =   "Overall Population Measure";
-            }
-                
-            else
-            {
-                model   =   OverallMeasureComputation.getOverallTreeModel((TreeMeasure) measure);
-                context =   "Overall Tree Measure";
+                case 0:
+                    model   =   OverallMeasureComputation.getOverallPopulationModel((PopulationMeasure) measure);
+                    context =   "Overall Population Measure";
+                    break;
+                    
+                case 1:
+                    model   =   OverallMeasureComputation.getOverallTreeModel((TreeMeasure) measure);
+                    context =   "Overall Tree Measure";
+                    break;
+                    
+                case 2:
+                    model   =   MixedOverallMeasure.getOverallModel();
+                    context =   "Overall Mixed Measure";
+                    break;
+                    
+                default: return;
             }
             
             AbstractMeasure.setComputationModel(model, context);

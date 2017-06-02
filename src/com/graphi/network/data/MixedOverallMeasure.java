@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class MixedOverallMeasure 
 {
-    public static DefaultTableModel getOverallModel(MixedMeasure mixedMeasure)
+    public static DefaultTableModel getOverallModel()
     {
         DefaultTableModel model     =   new DefaultTableModel();
         List<PlaybackEntry> entries =   OverallMeasureComputation.getEntries();
