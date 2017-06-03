@@ -42,6 +42,7 @@ public class ResearchPlugin extends AbstractPlugin
         taskManager.registerTask(new DiffusionTask());
         taskManager.registerTask(new OverallMeasureTask());
         taskManager.registerTask(new MNModelTransformTask());
+        taskManager.registerTask(new LazyRecorderTask());
     }
     
     @Override
