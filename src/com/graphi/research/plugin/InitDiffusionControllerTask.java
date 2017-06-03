@@ -50,15 +50,15 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         seedProp.setName("networkSeeder");
         seedProp.setParamValue("method", "0");
         seedProp.setParamValue("seedPerc", "0.1");
-        seedProp.setParamValue("authMode", "false");
+        seedProp.setParamValue("authMode", "true");
         seedProp.setParamValue("authPerc", "0.7");
-        seedProp.setParamValue("colourAuth", "false");
-        seedProp.setParamValue("colourInfl", "true");
+        seedProp.setParamValue("colourAuth", "true");
+        seedProp.setParamValue("colourInfl", "false");
         setProperty("Seeding", seedProp.toString());
         
         //Measure
         MappedProperty measureProp  =   new MappedProperty();
-        measureProp.setName("populationMeasure");
+        measureProp.setName("mixedMeasure");
         measureProp.setParamValue("enable", "true");
         measureProp.setParamValue("recordMode", "2");
         measureProp.setParamValue("popSize", "0");

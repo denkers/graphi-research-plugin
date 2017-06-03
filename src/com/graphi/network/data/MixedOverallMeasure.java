@@ -6,6 +6,8 @@
 
 package com.graphi.network.data;
 
+import com.graphi.display.layout.DataPanel;
+import com.graphi.graph.GraphDataManager;
 import com.graphi.sim.PlaybackEntry;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class MixedOverallMeasure
         DefaultTableModel model     =   new DefaultTableModel();
         List<PlaybackEntry> entries =   OverallMeasureComputation.getEntries();
         model.addColumn("Time Unit");
+        model.addColumn("Avg MN Weight");
         
         //PopulationMeasure columns
         model.addColumn("Infl. %");
@@ -39,8 +42,18 @@ public class MixedOverallMeasure
         {
             DefaultTableModel currentModel      =   entries.get(i).getComputationModel().getModel();
             DefaultTableModel prevModel         =   i == 0? null : entries.get(i - 1).getComputationModel().getModel();
+            double avgMNWeight                  =   0.0;
+            
+            if(i == 0)
+            {
+                DefaultTableModel edgeModel     =   DataPanel.getInstance().getEdgeDataModel();
+                int numEdges                    =   GraphDataManager.getGraphDataInstance().getEdges().size();
+                avgMNWeight                     =   OverallMeasureComputation.getColumnAverage(edgeModel, 3, numEdges);
+            }
+            
             List rowList                        =   new ArrayList<>();
             rowList.add(i);
+            rowList.add(avgMNWeight);
             
             //PopulationMeasure data
             double inflPortion          =   (double) currentModel.getValueAt(0, 0);
@@ -70,11 +83,11 @@ public class MixedOverallMeasure
         }
         
         //Add PopulationMeasure averages
-        double inflChangeAverage    =   OverallMeasureComputation.getColumnAverage(model, 2, entries.size() - 1);
-        model.setValueAt(inflChangeAverage, 0, 3);
+        double inflChangeAverage    =   OverallMeasureComputation.getColumnAverage(model, 3, entries.size() - 1);
+        model.setValueAt(inflChangeAverage, 0, 4);
         
-        double authChangeAverage    =   OverallMeasureComputation.getColumnAverage(model, 5, entries.size() - 1);
-        model.setValueAt(authChangeAverage, 0, 6);
+        double authChangeAverage    =   OverallMeasureComputation.getColumnAverage(model, 6, entries.size() - 1);
+        model.setValueAt(authChangeAverage, 0, 7);
         
         return model;
     }
