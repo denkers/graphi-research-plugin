@@ -182,9 +182,6 @@ public class DiffusionController
         graphData.resetFactoryIDs();
         Graph<Node, Edge> network   =   networkGenerator.generateNetwork(nodeFactory, edgeFactory);
         
-        System.out.println("== GENERATE NETWORK ==");
-        System.out.println("Generator name: " + networkGenerator.getGeneratorName());
-        
         if(diffusionDecisionType == EIGEN_DECISION_TYPE)
         {
             EigenvectorCentrality centrality        =   new EigenvectorCentrality(network);

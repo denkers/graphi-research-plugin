@@ -10,9 +10,10 @@ import com.graphi.graph.Edge;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class InfluenceRankComparator implements Comparator<Node>
+public class InfluenceRankComparator implements Comparator<Node>, Serializable
 {
     private final Node perspectiveAgent;
     

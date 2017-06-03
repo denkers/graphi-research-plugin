@@ -15,6 +15,7 @@ import com.graphi.network.data.TreeMeasure;
 import com.graphi.network.generator.CompleteGraphGenerator;
 import com.graphi.network.generator.CycleGraphGenerator;
 import com.graphi.network.generator.LineGraphGenerator;
+import com.graphi.network.generator.RealDataGenerator;
 import com.graphi.network.generator.StarGraphGenerator;
 import com.graphi.network.generator.WheelGraphGenerator;
 import com.graphi.network.rank.PolicyController;
@@ -22,6 +23,7 @@ import com.graphi.plugins.PluginManager;
 import com.graphi.sim.generator.NetworkGenerator;
 import com.graphi.tasks.MappedProperty;
 import com.graphi.tasks.SimulateNetworkTask;
+import java.io.File;
 
 public class InitDiffusionControllerTask extends SimulateNetworkTask
 {
@@ -40,6 +42,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         genProp.setName("kleinberg");
         genProp.setParamValue("latSize", "10");
         genProp.setParamValue("exp", "2");
+        genProp.setParamValue("path", "/home/denker/Dropbox/FinalProjectGraphiTasks/graphs/facebook_combined.edgelist");
         setProperty("Generator", genProp.toString());
         
         //Seeding
@@ -47,15 +50,15 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         seedProp.setName("networkSeeder");
         seedProp.setParamValue("method", "0");
         seedProp.setParamValue("seedPerc", "0.1");
-        seedProp.setParamValue("authMode", "true");
+        seedProp.setParamValue("authMode", "false");
         seedProp.setParamValue("authPerc", "0.7");
-        seedProp.setParamValue("colourAuth", "true");
-        seedProp.setParamValue("colourInfl", "false");
+        seedProp.setParamValue("colourAuth", "false");
+        seedProp.setParamValue("colourInfl", "true");
         setProperty("Seeding", seedProp.toString());
         
         //Measure
         MappedProperty measureProp  =   new MappedProperty();
-        measureProp.setName("mixedMeasure");
+        measureProp.setName("populationMeasure");
         measureProp.setParamValue("enable", "true");
         measureProp.setParamValue("recordMode", "2");
         measureProp.setParamValue("popSize", "0");
@@ -134,6 +137,7 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
             case "berbasi": gen     =   getBASim(genProp); break;
             case "kleinberg": gen   =   getKleinbergSim(genProp); break;
             case "random": gen      =   getRASim(genProp); break;
+            case "real": gen        =   getRealGenerator(genProp); break;
             default: gen            =   getClassicGenerator(genProp);
         }
         
@@ -157,6 +161,14 @@ public class InitDiffusionControllerTask extends SimulateNetworkTask
         }
         
         return gen;
+    }
+    
+    public NetworkGenerator getRealGenerator(MappedProperty prop)
+    {
+        String path     =   prop.getParamValue("path");
+        File dataFile   =   new File(path);
+        
+        return new RealDataGenerator(dataFile);
     }
     
     public AbstractMeasure getMeasure()

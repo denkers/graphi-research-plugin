@@ -27,7 +27,7 @@ public class OverallMeasureTask extends AbstractTask
     @Override
     public void initDefaultProperties() 
     {
-        setProperty("overallMeasureType", "2");
+        setProperty("overallMeasureType", "0");
     }
 
     @Override

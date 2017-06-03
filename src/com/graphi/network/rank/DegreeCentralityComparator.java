@@ -10,9 +10,10 @@ import com.graphi.graph.Edge;
 import com.graphi.graph.GraphDataManager;
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.graph.Graph;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class DegreeCentralityComparator implements Comparator<Node>
+public class DegreeCentralityComparator implements Comparator<Node>, Serializable
 {
     @Override
     public int compare(Node nodeA, Node nodeB)

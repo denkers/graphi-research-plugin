@@ -8,9 +8,10 @@ package com.graphi.network.rank;
 
 import com.graphi.graph.Node;
 import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class EigenvectorCentralityComparator implements Comparator<Node>
+public class EigenvectorCentralityComparator implements Comparator<Node>, Serializable
 {
     private EigenvectorCentrality centrality;
     

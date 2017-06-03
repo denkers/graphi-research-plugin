@@ -8,9 +8,10 @@ package com.graphi.network.rank;
 
 import com.graphi.graph.Node;
 import com.graphi.network.RankingAgent;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class TrendingSourceComparator implements Comparator<Node>
+public class TrendingSourceComparator implements Comparator<Node>, Serializable
 {
     @Override
     public int compare(Node nodeA, Node nodeB) 
