@@ -80,6 +80,22 @@ public class DiffusionController
         diffusionDecisionType   =   STANDARD_DECISION_TYPE;
     }
     
+    public Set<Node> getNonInfluencedNeighbours(Node node)
+    {
+        Graph<Node, Edge> graph =   GraphDataManager.getGraphDataInstance().getGraph();
+        Collection<Node> neighbours =   graph.getNeighbors(node);
+        Set<Node> nonInfluencedNeighbours = new HashSet<>();
+        
+        for(Node neighbour : neighbours)
+        {
+            InfluenceAgent neighbourAgent  =   (InfluenceAgent) neighbour;
+            if(!neighbourAgent.isInfluenced())
+                nonInfluencedNeighbours.add(neighbourAgent);
+        }
+        
+        return nonInfluencedNeighbours;
+    }
+    
     public void pollAgents()
     {
         List<Node> currentActiveAgents =   new ArrayList<>(activeAgents);
@@ -94,22 +110,34 @@ public class DiffusionController
             else
             {
                 InfluenceAgent neighbourAgent   =   (InfluenceAgent) optimalNeighbour;   
-                boolean influenceSuccess        =   !enableMN? true : agent.tryInfluenceAgent(neighbourAgent);
+                boolean influenceSuccess        =   enableMN? agent.tryInfluenceAgent(neighbourAgent) : true;
                 
                 if(influenceSuccess) 
                 {
+                  /*  if(!enableMN)
+                    {
+                        Set<Node> nonInfluencedNeighbours = getNonInfluencedNeighbours(agent);
+                        for(Node nonInfluencedNeighbour : nonInfluencedNeighbours)
+                        {
+                            agent.influenceAgent((InfluenceAgent) nonInfluencedNeighbour);
+                            addActiveAgent((InfluenceAgent) nonInfluencedNeighbour);
+                        }
+                    }
+                    else
+                    {*/
                     if(isInfluenceMode())
                     {
                         agent.influenceAgent(neighbourAgent);
                         addActiveAgent(neighbourAgent);
                     }
-                    
+
                     else
                     {
                         ((RankingAgent) agent).addInfluenceOffer((RankingAgent) neighbourAgent);
                         if(policyController != null) 
                             policyController.addPendingAgent(neighbourAgent);
                     }
+                  //  }
                 }
             }
         }

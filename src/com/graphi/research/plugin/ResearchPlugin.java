@@ -6,9 +6,15 @@
 
 package com.graphi.research.plugin;
 
+import com.graphi.graph.Node;
 import com.graphi.network.DiffusionController;
+import com.graphi.network.InfluenceAgent;
+import com.graphi.network.RankingAgent;
+import com.graphi.network.rank.TrendingSourceComparator;
 import com.graphi.plugins.AbstractPlugin;
 import com.graphi.tasks.TaskManager;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class ResearchPlugin extends AbstractPlugin
 {

@@ -15,13 +15,14 @@ import com.graphi.network.RankingAgent;
 import com.graphi.network.RankingAgentFactory;
 import com.graphi.network.data.RankingAgentDataModel;
 import com.graphi.network.data.RankingAgentRowTransformer;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PolicyController 
+public class PolicyController implements Serializable
 {
     public static final int TRENDING_SOURCE_MODE    =   0;   
     public static final int TRENDING_TREE_MODE      =   1;

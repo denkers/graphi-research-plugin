@@ -49,13 +49,12 @@ public class LazyRecorderTask extends AbstractTask
     {
         List<Task> tasks    =   TaskManager.getInstance().getTasks().getRepeatableTasks();
         
-        for(int i = 100; i < 1000; i++)
+        for(int i = 100; i <= 1000; i+= 100)
         {
-            String iteration    =   "" + i;
-            setFiles(iteration, tasks);
-            setDiffusionController(iteration, tasks);
+            setFiles("" + i, tasks);
+            setDiffusionController(i, tasks);
             
-            for(int j = 0; j < 5; j++)
+            for(int j = 0; j < 3; j++)
             {
                 for(int k = 0; k < tasks.size(); k++)
                     tasks.get(k).performTask();
@@ -65,10 +64,10 @@ public class LazyRecorderTask extends AbstractTask
     
     public void setFiles(String dirIteration, List<Task> tasks)
     {
-        final String expName    =   "Line";
+        final String expName    =   "Kleinberg";
         String rootDir          =   "/home/denker/Dropbox/FinalProjectGraphiTasks/experiments/";
-        String currentDir       =   "ClassicGeneratorExperiments/" + expName + "/";   
-        String dir              =   rootDir + currentDir;
+        String currentDir       =   "FixedNodeInfluenceAllExperiments/" + expName + "/";   
+        String dir              =   rootDir + currentDir + dirIteration + "/";
         String fileName         =   expName + dirIteration + "Node";
         
         tasks.get(5).setProperty("File name", fileName);
@@ -77,12 +76,55 @@ public class LazyRecorderTask extends AbstractTask
         tasks.get(6).setProperty("Directory", dir);
     }
     
-    public void setDiffusionController(String iteration, List<Task> tasks)
+    public void setDiffusionController(int iteration, List<Task> tasks)
+    {
+        MappedProperty genProperty  =   getKleinbergGen(iteration);
+        tasks.get(2).setProperty("Generator", genProperty.toString());
+    }
+    
+    public MappedProperty getRealGen()
+    {
+        MappedProperty genProp  =   new MappedProperty();
+        genProp.setName("real");
+        genProp.setParamValue("path", "/home/denker/Dropbox/FinalProjectGraphiTasks/graphs/facebook.edgelist");
+        
+        return genProp;
+    }
+    
+    public MappedProperty getKleinbergGen(double iteration)
+    {
+        MappedProperty genProp  =   new MappedProperty();
+        double sq               =   Math.sqrt(iteration);
+        int latSize             =   sq % 1 == 0? (int) sq : (int) (sq + 1);
+        
+        genProp.setName("kleinberg");
+        genProp.setParamValue("latSize", "" + latSize);
+        genProp.setParamValue("exp", "" + 2);
+        
+        return genProp;
+    }
+    
+    public MappedProperty getRandomGen(int iteration)
     {
         MappedProperty generatorProperty    =   new MappedProperty();
-        generatorProperty.setName("Line");
-        generatorProperty.setParamValue("numNodes", iteration);
+        generatorProperty.setName("random");
+        generatorProperty.setParamValue("n", "" + iteration);
+        generatorProperty.setParamValue("p", "0.1");
+        generatorProperty.setParamValue("dir", "false");
         
-        tasks.get(2).setProperty("Generator", generatorProperty.toString());
+        return generatorProperty;
+    }
+    
+    public MappedProperty getBarbasiGen(int iteration)
+    {
+        MappedProperty generatorProperty    =   new MappedProperty();
+        int numInitial  =   (int) (iteration * 0.05);
+        int numNodes    =   iteration - numInitial;
+        generatorProperty.setName("berbasi");
+        generatorProperty.setParamValue("n", "" + numNodes);
+        generatorProperty.setParamValue("i", "" + numInitial);
+        generatorProperty.setParamValue("dir", "false");
+        
+        return generatorProperty;
     }
 }
