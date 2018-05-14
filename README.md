@@ -1,4 +1,4 @@
-<img src="GraphiPluginLogo.png" align="left" />
+<img src="preview/AppIcon.png" align="left" />
 
 # graphi-diffusion Plugin
 
