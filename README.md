@@ -8,7 +8,7 @@ graphi-diffusion is a research driven plugin for [Graphi](https://github.com/kyl
 The plugin simulates social network users that observe information sharing behaviour using an agent-based model  
 Agents in the network are given decision making mechanisms where they can optimally choose which friend to pass information to as well as which friend to accept information. Agents can carry misinformation or factual information where they propogate this 
 information and those that recieve it also endorse it and this information continues to diisseminate through the network. 
-The plugin generates large random networks with information sharing agents where a set of the seeds carru misinformation, the agents 
+The plugin generates large random networks with information sharing agents where a set of the seeds carry misinformation, the agents 
 then spread their information autonomously through the network and once complete, the plugin measures the proportion of misinformation 
 and other diffusion behaviour measures such as propagation trees to observe the spread of a source
 
